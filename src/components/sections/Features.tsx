@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Brain, FileCheck, MapPin, Shield } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -7,33 +7,36 @@ gsap.registerPlugin(ScrollTrigger);
 
 const features = [
   {
-    icon: MapPin,
-    iconWrapClass: "bg-teal-50",
-    iconClass: "text-teal-600",
     title: "Real-time GPS tracking",
-    description: "See exactly where your package is at every moment, plotted on a live map with route history.",
+    points: [
+      "Track live route with timestamped checkpoints.",
+      "Monitor delivery drift and unexpected stops.",
+      "See courier and receiver status updates in one timeline.",
+    ],
   },
   {
-    icon: Brain,
-    iconWrapClass: "bg-[#E6F1FB]",
-    iconClass: "text-[#185FA5]",
     title: "AI safety prediction",
-    description: "Random Forest model trained on 5000+ samples. 99.98% CV accuracy, ~0.9ms per inference.",
+    points: [
+      "ONNX model returns risk in milliseconds.",
+      "Detects shock patterns and temperature anomalies.",
+      "Provides confidence score for claim decisions.",
+    ],
   },
   {
-    icon: Shield,
-    iconWrapClass: "bg-[#FAECE7]",
-    iconClass: "text-[#993C1D]",
     title: "Immutable proof on 0G",
-    description: "Sensor logs hashed and stored on 0G decentralized storage. Tamper-proof evidence for every claim.",
+    points: [
+      "Sensor records are hashed and anchored to CID.",
+      "Evidence remains tamper-proof and auditable.",
+      "Supports transparent dispute resolution.",
+    ],
   },
   {
-    icon: FileCheck,
-    iconWrapClass: "bg-[#EEEDFE]",
-    iconClass: "text-[#534AB7]",
     title: "Auto-claim via smart contract",
-    description:
-      "When safety score drops below threshold, smart contract triggers deposit release automatically.",
+    points: [
+      "Escrow conditions execute automatically.",
+      "Claims trigger on verified risk thresholds.",
+      "Refund and settlement logic is programmable.",
+    ],
   },
 ];
 
@@ -69,24 +72,25 @@ export default function Features() {
         <h2 className="mt-3 text-3xl font-medium text-ink-primary">Everything you need to protect what you ship</h2>
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {features.map((feature, idx) => {
-            const Icon = feature.icon;
-            return (
-              <div
-                key={feature.title}
-                ref={(el) => {
-                  cardsRef.current[idx] = el;
-                }}
-                className="rounded-2xl border border-ink-muted/10 bg-surface-secondary p-5 transition-colors duration-200 hover:border-teal-200"
-              >
-                <div className={`mb-4 flex h-8 w-8 items-center justify-center rounded-lg ${feature.iconWrapClass}`}>
-                  <Icon size={16} className={feature.iconClass} />
-                </div>
-                <h3 className="text-base font-medium text-ink-primary">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-secondary">{feature.description}</p>
-              </div>
-            );
-          })}
+          {features.map((feature, idx) => (
+            <div
+              key={feature.title}
+              ref={(el) => {
+                cardsRef.current[idx] = el;
+              }}
+              className="rounded-2xl border border-ink-muted/10 bg-surface-secondary p-5 transition-colors duration-200 hover:border-teal-200"
+            >
+              <h3 className="text-base font-semibold text-ink-primary">{feature.title}</h3>
+              <ul className="mt-3 space-y-2">
+                {feature.points.map((point) => (
+                  <li key={point} className="flex items-start gap-2 text-sm text-ink-secondary">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-teal-500" />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -61,9 +61,9 @@ export default function HowItWorks() {
               ref={(el) => {
                 cardsRef.current[idx] = el;
               }}
-              className="rounded-2xl border border-ink-muted/10 bg-surface-secondary p-5"
+              className="group rounded-2xl bg-surface-secondary p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border hover:border-transparent hover:bg-[linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0)),linear-gradient(90deg,#22c55e,#06b6d4)] hover:[background-clip:padding-box,border-box] hover:shadow-[0_12px_30px_rgba(6,182,212,0.2)]"
             >
-              <div className="mb-4 flex h-8 w-8 items-center justify-center rounded-full border border-teal-400 text-sm font-medium text-teal-400">
+              <div className="mb-4 flex h-8 w-8 items-center justify-center rounded-full border border-teal-400 text-sm font-medium text-teal-400 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-ink-primary">
                 {idx + 1}
               </div>
               <h3 className="text-base font-medium text-ink-primary">{step.title}</h3>

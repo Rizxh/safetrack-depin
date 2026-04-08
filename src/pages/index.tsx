@@ -1,31 +1,32 @@
 import dynamic from "next/dynamic";
-import { Inter } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/sections/HeroSection";
 import LiveSensorCard from "@/components/sections/LiveSensorCard";
 import HowItWorks from "@/components/sections/HowItWorks";
 import Features from "@/components/sections/Features";
-import Stats from "@/components/sections/Stats";
-import Pricing from "@/components/sections/Pricing";
+import FaqSection from "@/components/sections/FaqSection";
+import ContactSection from "@/components/sections/ContactSection";
+import DocsSection from "@/components/sections/DocsSection";
+import ProjectFlowSection from "@/components/sections/ProjectFlowSection";
 
 const ThreeScene = dynamic(() => import("@/components/three/ThreeScene"), {
   ssr: false,
   loading: () => <div className="h-full w-full bg-transparent" />,
 });
 
-const inter = Inter({ subsets: ["latin"] });
-
 export default function Home() {
   return (
-    <main className={inter.className}>
+    <main>
       <Navbar />
       <HeroSection ThreeScene={ThreeScene} />
       <LiveSensorCard />
       <HowItWorks />
       <Features />
-      <Stats />
-      <Pricing />
+      <ProjectFlowSection />
+      <FaqSection />
+      <ContactSection />
+      <DocsSection />
       <Footer />
     </main>
   );

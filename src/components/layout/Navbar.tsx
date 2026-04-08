@@ -1,22 +1,38 @@
 import { useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
-import { gsap } from "gsap";
+import { Bell, Menu, X } from "lucide-react";
 
 const links = [
-  { label: "How it works", href: "#how-it-works" },
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
   { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Docs", href: "#stats" },
+  { label: "FAQs", href: "#faqs" },
+  { label: "Contact us", href: "#contact-us" },
+  { label: "Docs", href: "#docs" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const navRef = useRef<HTMLElement>(null);
+  const [active, setActive] = useState("#home");
+  const [showNav, setShowNav] = useState(true);
+  const lastScrollYRef = useRef(0);
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 80);
+      const currentY = window.scrollY;
+      const lastY = lastScrollYRef.current;
+      setScrolled(currentY > 80);
+
+      if (currentY <= 24) {
+        setShowNav(true);
+      } else if (currentY > lastY + 4) {
+        setShowNav(false);
+        setOpen(false);
+      } else if (currentY < lastY - 4) {
+        setShowNav(true);
+      }
+
+      lastScrollYRef.current = currentY;
     };
 
     onScroll();
@@ -25,76 +41,117 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        navRef.current,
-        { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }
-      );
-    }, navRef);
+    const sections = links
+      .map((link) => document.querySelector(link.href))
+      .filter((section): section is Element => Boolean(section));
 
-    return () => {
-      ctx.revert();
-    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActive(`#${entry.target.id}`);
+          }
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0.1 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
-  const scrollToSection = (id: string) => {
-    const el = document.querySelector(id);
+  const scrollToSection = (href: string) => {
+    const el = document.querySelector(href);
     if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      const y = (el as HTMLElement).offsetTop - 88;
+      window.scrollTo({ top: y, behavior: "smooth" });
+      setActive(href);
       setOpen(false);
     }
   };
 
   return (
     <header
-      ref={navRef}
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        scrolled ? "border-b border-ink-muted/20 bg-white/90 backdrop-blur-md" : "bg-transparent"
+      className={`fixed top-0 z-50 w-screen transition-all duration-300 ${
+        showNav ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+      } ${scrolled ? "backdrop-blur-xl" : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-teal-400" />
-          <span className="text-sm font-semibold text-ink-primary">SafeTrace</span>
-        </button>
-
-        <nav className="hidden items-center gap-6 md:flex">
-          {links.map((link) => (
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+        <div className="hidden w-full items-center md:flex">
+          <div className="mx-auto flex w-full max-w-6xl items-center rounded-full border border-white/35 bg-[#0B1F31]/80 px-3 py-2 shadow-[0_14px_40px_rgba(4,17,31,0.45)] backdrop-blur-2xl">
             <button
-              key={link.label}
-              className="text-sm text-ink-secondary transition-colors hover:text-ink-primary"
-              onClick={() => scrollToSection(link.href)}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="mr-4 flex shrink-0 items-center gap-2 rounded-full px-2 py-1"
+              aria-label="SafeTrace home"
             >
-              {link.label}
+              <span className="text-2xl font-bold uppercase tracking-tight text-white">ST</span>
             </button>
-          ))}
-        </nav>
 
-        <div className="hidden md:block">
-          <button className="rounded-lg bg-teal-400 px-4 py-2 text-sm text-white transition-colors hover:bg-teal-600">
-            Get started
-          </button>
+            <nav className="flex flex-1 items-center justify-center gap-1">
+              {links.map((link) => (
+                <button
+                  key={link.label}
+                  className={`rounded-full px-3 py-1.5 text-sm transition-all ${
+                    active === link.href
+                      ? "bg-white text-[#0B1F31] shadow-sm"
+                      : "text-slate-100 hover:bg-white/15 hover:text-white"
+                  }`}
+                  onClick={() => scrollToSection(link.href)}
+                >
+                  {link.label}
+                </button>
+              ))}
+            </nav>
+
+            <button
+              className="ml-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/35 bg-white/10 text-white transition-colors hover:bg-white/20"
+              aria-label="Notifications"
+            >
+              <Bell className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
-        <button className="md:hidden" onClick={() => setOpen((v) => !v)} aria-label="Toggle menu">
-          {open ? <X className="h-5 w-5 text-ink-primary" /> : <Menu className="h-5 w-5 text-ink-primary" />}
-        </button>
+        <div className="w-full md:hidden">
+          <div className="mx-auto flex max-w-xs items-center justify-between rounded-full border border-white/35 bg-[#0B1F31]/85 px-4 py-2 shadow-[0_14px_40px_rgba(4,17,31,0.45)] backdrop-blur-2xl">
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="text-2xl font-bold uppercase tracking-tight text-white"
+              aria-label="SafeTrace home"
+            >
+              ST
+            </button>
+            <button onClick={() => setOpen((v) => !v)} aria-label="Toggle menu">
+              {open ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5 text-white" />}
+            </button>
+          </div>
+        </div>
       </div>
 
       {open && (
-        <div className="border-t border-ink-muted/20 bg-white/95 px-4 py-3 md:hidden">
-          <div className="flex flex-col gap-2">
+        <div className="px-4 pt-2 md:hidden">
+          <div className="mx-auto max-w-xs rounded-2xl border border-white/35 bg-[#0B1F31]/95 px-4 py-3 backdrop-blur-xl">
+            <div className="flex flex-col gap-2">
+            <div className="mb-1 flex items-center gap-2 px-1">
+              <span className="text-2xl font-bold uppercase tracking-tight text-white">ST</span>
+            </div>
             {links.map((link) => (
               <button
                 key={link.label}
-                className="rounded-md px-2 py-2 text-left text-sm text-ink-secondary hover:bg-surface-secondary"
+                className={`rounded-md px-3 py-2 text-left text-sm transition-colors ${
+                  active === link.href ? "bg-white text-[#0B1F31]" : "text-slate-100 hover:bg-white/15"
+                }`}
                 onClick={() => scrollToSection(link.href)}
               >
                 {link.label}
               </button>
             ))}
-            <button className="mt-2 rounded-lg bg-teal-400 px-4 py-2 text-sm text-white">Get started</button>
+            <button className="mt-2 flex w-fit items-center gap-2 rounded-full border border-white/35 bg-white/10 px-4 py-2 text-sm text-white">
+              <Bell className="h-4 w-4" />
+              Notifications
+            </button>
+            </div>
           </div>
         </div>
       )}
