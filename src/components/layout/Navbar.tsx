@@ -16,8 +16,18 @@ export default function Navbar() {
   const [active, setActive] = useState("#home");
   const [showNav, setShowNav] = useState(true);
   const lastScrollYRef = useRef(0);
+  const sectionElsRef = useRef<HTMLElement[]>([]);
+  const activeRef = useRef("#home");
 
   useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
+
+  useEffect(() => {
+    sectionElsRef.current = links
+      .map((link) => document.querySelector(link.href))
+      .filter((el): el is HTMLElement => Boolean(el));
+
     const onScroll = () => {
       const currentY = window.scrollY;
       const lastY = lastScrollYRef.current;
@@ -32,32 +42,20 @@ export default function Navbar() {
         setShowNav(true);
       }
 
+      const currentSection = [...sectionElsRef.current]
+        .reverse()
+        .find((section) => currentY + 120 >= section.offsetTop);
+      if (currentSection) {
+        const id = `#${currentSection.id}`;
+        if (id !== activeRef.current) setActive(id);
+      }
+
       lastScrollYRef.current = currentY;
     };
 
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    const sections = links
-      .map((link) => document.querySelector(link.href))
-      .filter((section): section is Element => Boolean(section));
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActive(`#${entry.target.id}`);
-          }
-        });
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: 0.1 }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
   }, []);
 
   const scrollToSection = (href: string) => {
