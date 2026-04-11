@@ -202,7 +202,7 @@ export default function Navbar() {
               alt=""
               width={320}
               height={80}
-              className="h-9 w-auto max-w-[min(200px,58vw)] shrink-0 object-contain object-left sm:h-10 sm:max-w-[min(240px,52vw)] lg:hidden"
+              className="h-9 w-auto shrink-0 object-contain object-left sm:h-10 sm:max-w-[min(240px,52vw)] lg:hidden scale-[2.5] origin-left"
               priority
             />
             <Image
@@ -210,7 +210,7 @@ export default function Navbar() {
               alt=""
               width={512}
               height={512}
-              className="hidden h-14 w-14 shrink-0 object-contain lg:block lg:h-[4.75rem] lg:w-[4.75rem]"
+              className="hidden h-14] w-14 shrink-0 object-contain lg:block lg:h-[2.5rem] lg:w-[2.5rem]"
             />
           </button>
 

@@ -23,7 +23,7 @@ const ThreeScene = dynamic(() => import("@/components/three/ThreeScene"), {
 
 export default function Home() {
   return (
-    <main className="landing-root relative min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-[var(--accent-soft)]">
+    <main className="landing-root overflow-x-hidden relative min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-[var(--accent-soft)]">
       <div className="landing-hero-base" aria-hidden />
       <div className="landing-hero-aurora" aria-hidden />
       <div

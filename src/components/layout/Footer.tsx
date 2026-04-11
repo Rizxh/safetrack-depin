@@ -46,21 +46,15 @@ export default function Footer() {
                 alt=""
                 width={320}
                 height={80}
-                className="h-12 w-auto max-w-[min(260px,80vw)] shrink-0 object-contain object-left sm:h-14 sm:max-w-[min(300px,70vw)] lg:hidden"
+                className="h-16 w-auto max-w-[min(260px,80vw)] shrink-0 object-contain object-left sm:h-20 sm:max-w-[min(300px,70vw)] lg:block scale-[2.5] origin-left"
               />
               <Image
                 src="/icon.png"
                 alt=""
                 width={512}
                 height={512}
-                className="hidden h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20 lg:block"
+                className="hidden h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20 lg:hidden"
               />
-              <span className="text-left">
-                <span className="block font-mono text-base font-semibold tracking-tight text-[var(--text-primary)]">
-                  {PROJECT_SHORT_NAME}
-                </span>
-                <span className="mt-0.5 block text-xs text-[var(--text-muted)]">Depin Logistic System</span>
-              </span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-[var(--text-secondary)]">
               DePIN logistics visibility—sensors, risk signals, and proofs in one place for teams that need calm,
