@@ -48,11 +48,16 @@ export default function HowItWorks() {
   }, []);
 
   return (
-    <section id="how-it-works" ref={sectionRef} className="px-4 py-20">
-      <div className="mx-auto max-w-6xl">
-        <p className="text-xs font-medium uppercase tracking-widest text-teal-400">HOW IT WORKS</p>
-        <h2 className="mt-3 text-3xl font-medium text-ink-primary">Three steps to full shipment confidence</h2>
-        <p className="mt-2 text-sm text-ink-secondary">From hardware to dashboard in minutes.</p>
+    <section
+      id="how-it-works"
+      ref={sectionRef}
+      className="relative overflow-hidden bg-black px-4 py-20 text-white sm:px-6"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(59,130,246,0.12),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(16,185,129,0.12),transparent_38%)]" />
+      <div className="relative mx-auto max-w-6xl">
+        <p className="text-xs font-medium uppercase tracking-widest text-teal-300">HOW IT WORKS</p>
+        <h2 className="mt-3 text-3xl font-medium text-white">Three steps to full shipment confidence</h2>
+        <p className="mt-2 text-sm text-zinc-400">From hardware to dashboard in minutes.</p>
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
           {steps.map((step, idx) => (
@@ -61,13 +66,13 @@ export default function HowItWorks() {
               ref={(el) => {
                 cardsRef.current[idx] = el;
               }}
-              className="group rounded-2xl bg-surface-secondary p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border hover:border-transparent hover:bg-[linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0)),linear-gradient(90deg,#22c55e,#06b6d4)] hover:[background-clip:padding-box,border-box] hover:shadow-[0_12px_30px_rgba(6,182,212,0.2)]"
+              className="group rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-transparent hover:bg-[linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0)),linear-gradient(90deg,#22c55e,#06b6d4)] hover:[background-clip:padding-box,border-box] hover:shadow-[0_12px_30px_rgba(6,182,212,0.2)]"
             >
-              <div className="mb-4 flex h-8 w-8 items-center justify-center rounded-full border border-teal-400 text-sm font-medium text-teal-400 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-ink-primary">
+              <div className="mb-4 flex h-8 w-8 items-center justify-center rounded-full border border-teal-400 text-sm font-medium text-teal-300 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-zinc-900">
                 {idx + 1}
               </div>
-              <h3 className="text-base font-medium text-ink-primary">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-secondary">{step.description}</p>
+              <h3 className="text-base font-medium text-white">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-400">{step.description}</p>
             </div>
           ))}
         </div>

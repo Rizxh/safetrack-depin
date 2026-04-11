@@ -29,7 +29,7 @@ export default function LiveSensorCard() {
     <section id="about" className="relative overflow-hidden bg-black px-4 pb-20 pt-20 text-white sm:px-6">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.16),transparent_35%)]" />
       <div className="relative mx-auto max-w-6xl">
-        <p className="text-xs font-medium uppercase tracking-widest text-teal-300">About SafeTrace</p>
+        <p className="text-xs font-medium uppercase tracking-widest text-teal-300">About Safetrack</p>
         <h2 className="mt-3 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl">
           First-class smart tracking experience for logistics and customers.
         </h2>
@@ -42,7 +42,7 @@ export default function LiveSensorCard() {
           <div className="rounded-3xl border border-white/10 bg-white/3 p-4 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl">
             <div className="rounded-2xl border border-white/10 bg-black/60 p-4">
               <div className="mb-3 flex items-center justify-between text-sm text-zinc-300">
-                <span>SafeTrace Dashboard</span>
+                <span>Safetrack Dashboard</span>
                 <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-xs text-emerald-300">
                   Live
                 </span>

@@ -78,20 +78,24 @@ export default function ProjectFlowSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="px-4 py-20">
-      <div className="mx-auto max-w-6xl">
-        <p className="text-xs font-medium uppercase tracking-widest text-teal-400">System Flow</p>
-        <h2 className="mt-3 text-3xl font-medium text-ink-primary">How SafeTrace works end-to-end</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-secondary">
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-black px-4 py-20 text-white sm:px-6"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.08),transparent_45%),radial-gradient(circle_at_50%_100%,rgba(16,185,129,0.08),transparent_45%)]" />
+      <div className="relative mx-auto max-w-6xl">
+        <p className="text-xs font-medium uppercase tracking-widest text-teal-300">System Flow</p>
+        <h2 className="mt-3 text-3xl font-medium text-white">How Safetrack works end-to-end</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-zinc-400">
           Data flows from ESP32 sensors to AI inference, then to immutable 0G storage and escrow automation. The
           dashboard reflects every step with verifiable evidence for users and logistics teams.
         </p>
 
         <div
           ref={railRef}
-          className="relative mt-10 space-y-5 rounded-3xl border border-ink-muted/15 bg-surface-secondary/70 p-4 sm:p-6"
+          className="relative mt-10 space-y-5 rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm sm:p-6"
         >
-          <div className="absolute bottom-8 left-7.5 top-8 w-[3px] -translate-x-1/2 rounded-full bg-ink-muted/20 sm:left-[2.275rem]" />
+          <div className="absolute bottom-8 left-7.5 top-8 w-[3px] -translate-x-1/2 rounded-full bg-white/15 sm:left-[2.275rem]" />
           <div
             ref={progressRef}
             className="absolute bottom-8 left-7.5 top-8 w-[3px] -translate-x-1/2 rounded-full bg-linear-to-b from-teal-400 via-sky-400 to-teal-400 sm:left-[2.275rem]"
@@ -111,11 +115,11 @@ export default function ProjectFlowSection() {
                 ref={(el) => {
                   itemRefs.current[idx] = el;
                 }}
-                className="rounded-2xl border border-ink-muted/20 bg-transparent p-4 shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300 group-hover:border-teal-300/45 group-hover:bg-linear-to-r group-hover:from-teal-400/10 group-hover:to-sky-500/10"
+                className="rounded-2xl border border-white/10 bg-black/30 p-4 shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-all duration-300 group-hover:border-teal-400/40 group-hover:bg-linear-to-r group-hover:from-teal-400/10 group-hover:to-sky-500/10"
               >
-                <p className="text-xs font-semibold text-teal-500">STEP {idx + 1}</p>
-                <h3 className="mt-1 text-base font-semibold text-ink-primary">{step.title}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-ink-secondary">{step.note}</p>
+                <p className="text-xs font-semibold text-teal-400">STEP {idx + 1}</p>
+                <h3 className="mt-1 text-base font-semibold text-white">{step.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-zinc-400">{step.note}</p>
               </div>
             </div>
           ))}

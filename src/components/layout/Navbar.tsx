@@ -81,7 +81,7 @@ export default function Navbar() {
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="mr-4 flex shrink-0 items-center gap-2 rounded-full px-2 py-1"
-              aria-label="SafeTrace home"
+              aria-label="Safetrack home"
             >
               <span className="text-2xl font-bold uppercase tracking-tight text-white">ST</span>
             </button>
@@ -116,7 +116,7 @@ export default function Navbar() {
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="text-2xl font-bold uppercase tracking-tight text-white"
-              aria-label="SafeTrace home"
+              aria-label="Safetrack home"
             >
               ST
             </button>

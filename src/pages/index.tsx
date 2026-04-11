@@ -17,7 +17,7 @@ const ThreeScene = dynamic(() => import("@/components/three/ThreeScene"), {
 
 export default function Home() {
   return (
-    <main>
+    <main className="min-h-screen bg-black">
       <Navbar />
       <HeroSection ThreeScene={ThreeScene} />
       <LiveSensorCard />
