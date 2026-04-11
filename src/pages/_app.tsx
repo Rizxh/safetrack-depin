@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "maplibre-gl/dist/maplibre-gl.css";
 import type { AppProps } from "next/app";
 import { Inter } from "next/font/google";
 

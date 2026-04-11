@@ -1,16 +1,10 @@
-import { Package, MapPin, Battery, Signal, Info } from "lucide-react";
+import { Package, MapPin, Battery, Signal } from "lucide-react";
 import { shipmentData } from "@/data/mockData";
 import { useState } from "react";
+import { MapLibreMap } from "./MapLibreMap";
 
 export function ShipmentsSection() {
   const [selectedBox, setSelectedBox] = useState<string | null>(null);
-
-  const mapCoordinates: Record<string, { x: string; y: string }> = {
-    "BOX-7A12": { x: "45%", y: "30%" },
-    "BOX-3K49": { x: "50%", y: "45%" },
-    "BOX-9M22": { x: "48%", y: "40%" },
-    "BOX-1P87": { x: "80%", y: "60%" },
-  };
 
   return (
     <div className="space-y-6">
@@ -23,61 +17,12 @@ export function ShipmentsSection() {
         </p>
       </div>
 
-      {/* --- SIMULASI MAPBOX --- */}
-      <div className="relative w-full h-[400px] rounded-xl border border-border bg-[#0a0a0a] overflow-hidden group">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-
-        {/* Dummy Map Pins */}
-        {shipmentData.map((s) => {
-          const coords = mapCoordinates[s.boxId] || {
-            x: `${Math.random() * 80 + 10}%`,
-            y: `${Math.random() * 80 + 10}%`,
-          };
-          const isSelected = selectedBox === s.boxId;
-
-          return (
-            <div
-              key={s.id}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer z-10"
-              style={{ left: coords.x, top: coords.y }}
-              onClick={() => setSelectedBox(isSelected ? null : s.boxId)}>
-              {/* Ping Animation */}
-              <div
-                className={`absolute inset-0 rounded-full animate-ping opacity-75 ${s.status === "healthy" ? "bg-primary" : s.status === "warning" ? "bg-warning" : "bg-destructive"}`}></div>
-              {/* Dot */}
-              <div
-                className={`relative h-4 w-4 rounded-full border-2 border-background shadow-lg transition-transform ${isSelected ? "scale-150" : "scale-100"} ${s.status === "healthy" ? "bg-primary" : s.status === "warning" ? "bg-warning" : "bg-destructive"}`}></div>
-
-              {/* Popup Info (Tooltip Peta) */}
-              {isSelected && (
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-card border border-border rounded-lg shadow-xl text-left z-20">
-                  <p className="text-xs font-bold text-foreground">{s.boxId}</p>
-                  <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-1">
-                    <MapPin className="h-3 w-3" /> {s.location}
-                  </p>
-                  <div className="mt-2 text-[10px] space-y-1">
-                    <p className="flex justify-between">
-                      <span className="text-muted-foreground">Temp:</span>{" "}
-                      <span className="font-medium text-foreground">22°C</span>
-                    </p>
-                    <p className="flex justify-between">
-                      <span className="text-muted-foreground">Freq:</span>{" "}
-                      <span className="font-medium text-foreground">12Hz</span>
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-
-        <div className="absolute bottom-4 left-4 bg-background/80 backdrop-blur border border-border px-3 py-2 rounded-lg flex items-center gap-2">
-          <Info className="h-4 w-4 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">
-            Mapbox Simulation UI
-          </span>
-        </div>
-      </div>
+      {/* MapLibre GL Map */}
+      <MapLibreMap
+        shipments={shipmentData}
+        selectedBox={selectedBox}
+        onBoxSelect={setSelectedBox}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {shipmentData.map((s) => (
