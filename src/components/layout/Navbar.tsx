@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { useRouter } from "next/router";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { PROJECT_SHORT_NAME } from "@/config/brand";
+import { cn } from "@/lib/utils";
 
 const links = [
   { label: "About", href: "#about" },
@@ -16,15 +17,23 @@ const links = [
 
 const scrollOffset = 96;
 
+/** Posisi atas elemen relatif dokumen (aman walau ada ancestor `transform`, mis. ScrollReveal). */
+function elementDocumentTop(el: Element): number {
+  const rect = (el as HTMLElement).getBoundingClientRect();
+  return rect.top + window.scrollY;
+}
+
 function WalletNavActions({
   className,
   onNavigate,
   stackVertical,
+  lightSurface,
 }: {
   className?: string;
   onNavigate?: () => void;
   /** Menu mobile: tombol Dashboard + akun full width, vertikal */
   stackVertical?: boolean;
+  lightSurface?: boolean;
 }) {
   const router = useRouter();
 
@@ -100,7 +109,13 @@ function WalletNavActions({
                   <button
                     type="button"
                     onClick={openAccountModal}
-                    className={`glass truncate rounded-xl px-3 py-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] ${stackVertical ? "w-full max-w-none py-2.5" : "max-w-[140px]"}`}
+                    className={cn(
+                      "truncate rounded-xl px-3 py-1.5 text-sm transition-colors",
+                      stackVertical ? "w-full max-w-none py-2.5" : "max-w-[140px]",
+                      lightSurface
+                        ? "border border-white/50 bg-white/40 text-zinc-800 hover:border-white/55 hover:bg-white/45 hover:text-zinc-950"
+                        : "glass text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                    )}
                   >
                     {account.displayName}
                   </button>
@@ -150,7 +165,7 @@ export default function Navbar() {
       } else {
         const currentSection = [...sectionElsRef.current]
           .reverse()
-          .find((section) => currentY + scrollOffset + 40 >= section.offsetTop);
+          .find((section) => currentY + scrollOffset + 40 >= elementDocumentTop(section));
         if (currentSection) {
           const id = `#${currentSection.id}`;
           if (id !== activeRef.current) setActive(id);
@@ -167,12 +182,11 @@ export default function Navbar() {
 
   const scrollToSection = (href: string) => {
     const el = document.querySelector(href);
-    if (el) {
-      const y = (el as HTMLElement).offsetTop - scrollOffset;
-      window.scrollTo({ top: y, behavior: "smooth" });
-      setActive(href);
-      setOpen(false);
-    }
+    if (!el) return;
+    const y = elementDocumentTop(el) - scrollOffset;
+    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    setActive(href);
+    setOpen(false);
   };
 
   const scrollHome = () => {
@@ -184,10 +198,10 @@ export default function Navbar() {
   return (
     <header className="fixed left-1/2 top-4 z-50 w-[min(92%,calc(100%-1.5rem))] max-w-7xl -translate-x-1/2 md:top-5">
       <nav
-        className={`relative rounded-2xl px-4 py-2.5 shadow-lg transition-all duration-300 sm:px-6 sm:py-3 ${
+        className={`relative rounded-2xl px-4 py-2.5 shadow-lg transition-all duration-300 sm:px-6 sm:py-3 lg:px-5 lg:py-2 ${
           open
-            ? "border border-[var(--glass-border)] bg-[var(--bg-elevated)] shadow-black/35 backdrop-blur-sm"
-            : "glass-strong shadow-black/20"
+            ? "border border-white/55 bg-white/40 shadow-zinc-300/15 backdrop-blur-2xl lg:border-[var(--glass-border)] lg:bg-[var(--bg-elevated)] lg:shadow-black/35"
+            : "glass-strong backdrop-blur-2xl shadow-black/20"
         } ${showNav ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"}`}
       >
         <div className="flex items-center justify-between gap-3">
@@ -200,26 +214,26 @@ export default function Navbar() {
             <Image
               src="/logo.png"
               alt=""
-              width={320}
-              height={80}
-              className="h-9 w-auto shrink-0 object-contain object-left sm:h-10 sm:max-w-[min(240px,52vw)] lg:hidden scale-[2.5] origin-left"
+              width={480}
+              height={120}
+              className="h-12 w-auto max-w-[min(300px,88vw)] shrink-0 object-contain object-left sm:h-14 sm:max-w-[min(360px,75vw)] md:h-16 md:max-w-[min(400px,68vw)] lg:hidden"
               priority
             />
             <Image
               src="/icon.png"
               alt=""
-              width={512}
-              height={512}
-              className="hidden h-14] w-14 shrink-0 object-contain lg:block lg:h-[2.5rem] lg:w-[2.5rem]"
+              width={256}
+              height={256}
+              className="hidden h-9 w-9 shrink-0 object-contain lg:block"
             />
           </button>
 
-          <div className="hidden flex-1 items-center justify-center gap-1 lg:flex">
+          <div className="hidden flex-1 items-center justify-center gap-0.5 lg:flex">
             {links.map((link) => (
               <button
                 key={link.href}
                 type="button"
-                className={`rounded-lg px-2.5 py-1.5 text-sm transition-colors ${
+                className={`rounded-lg px-2 py-1 text-sm transition-colors lg:px-2.5 lg:py-1 ${
                   active === link.href
                     ? "text-[var(--text-primary)]"
                     : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -237,7 +251,10 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="rounded-lg p-2 text-[var(--text-secondary)] lg:hidden"
+            className={cn(
+              "rounded-lg p-2 lg:hidden",
+              open ? "text-zinc-800" : "text-[var(--text-secondary)]"
+            )}
             aria-label="Toggle menu"
             onClick={() => setOpen((v) => !v)}
           >
@@ -246,22 +263,28 @@ export default function Navbar() {
         </div>
 
         {open && (
-          <div className="mt-3 rounded-xl border border-[var(--glass-border)]/80 bg-[var(--bg-base)]/95 pt-3 lg:hidden">
-            <div className="flex max-h-[min(60vh,420px)] flex-col gap-1 overflow-y-auto px-1 pb-1">
+          <div className="mt-3 border-t border-white/45 pt-3 lg:hidden">
+            <div className="flex max-h-[min(60vh,420px)] flex-col gap-1 overflow-y-auto px-0 pb-1">
               {links.map((link) => (
                 <button
                   key={link.href}
                   type="button"
-                  className={`rounded-lg py-2.5 text-left text-sm ${
-                    active === link.href ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"
+                  className={`rounded-lg py-2.5 text-left text-sm transition-colors ${
+                    active === link.href
+                      ? "font-medium text-zinc-900"
+                      : "text-zinc-700 hover:bg-white/35 hover:text-zinc-900"
                   }`}
                   onClick={() => scrollToSection(link.href)}
                 >
                   {link.label}
                 </button>
               ))}
-              <div className="mt-3 border-t border-[var(--glass-border)] pt-3">
-                <WalletNavActions stackVertical onNavigate={() => setOpen(false)} />
+              <div className="mt-3 border-t border-white/45 pt-3">
+                <WalletNavActions
+                  stackVertical
+                  lightSurface
+                  onNavigate={() => setOpen(false)}
+                />
               </div>
             </div>
           </div>
