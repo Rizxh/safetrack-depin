@@ -12,7 +12,12 @@ import ProjectFlowSection from "@/components/sections/ProjectFlowSection";
 
 const ThreeScene = dynamic(() => import("@/components/three/ThreeScene"), {
   ssr: false,
-  loading: () => <div className="h-full w-full bg-transparent" />,
+  loading: () => (
+    <div
+      className="block h-[min(460px,58vh)] w-full min-h-[340px] bg-transparent lg:h-[min(600px,72vh)] lg:min-h-[420px]"
+      aria-hidden
+    />
+  ),
 });
 
 export default function Home() {

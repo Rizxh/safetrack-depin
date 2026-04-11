@@ -92,23 +92,6 @@ export default function Dashboard() {
             </h2>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Tombol Connect Wallet untuk Web3 / MetaMask */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden sm:flex items-center gap-2 rounded-full border-primary/50 hover:bg-primary/10 cursor-pointer">
-              <Wallet className="h-4 w-4 text-primary" />
-              <span className="font-medium">Connect Wallet</span>
-            </Button>
-
-            {/* Slot User Profile */}
-            <div className="h-8 w-8 rounded-full bg-secondary border border-border flex items-center justify-center shrink-0">
-              <span className="text-xs font-bold text-muted-foreground">
-                0x
-              </span>
-            </div>
-          </div>
         </header>
 
         {/* Konten Utama */}

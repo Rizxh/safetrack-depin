@@ -5,10 +5,7 @@ const links = [
   { label: "About", href: "#about" },
   { label: "Steps", href: "#how-it-works" },
   { label: "Features", href: "#features" },
-  { label: "Flow", href: "#flow" },
-  { label: "FAQ", href: "#faqs" },
   { label: "Contact", href: "#contact-us" },
-  { label: "Docs", href: "#docs" },
 ];
 
 const scrollOffset = 96;

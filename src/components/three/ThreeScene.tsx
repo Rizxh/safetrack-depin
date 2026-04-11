@@ -8,10 +8,20 @@ interface ThreeSceneProps {
   className?: string;
 }
 
-const SENSOR_COUNT = 14;
-const ORBIT_RADIUS = 2.35;
-/** Memperbesar seluruh isi scene untuk preview */
-const SCENE_SCALE = 1.38;
+const SENSOR_COUNT = 16;
+const ORBIT_RADIUS = 2.42;
+/** Medium-kecil: sedikit lebih kecil dari sebelumnya, tidak sekecil versi “mini” */
+const SCENE_SCALE = 0.9;
+
+/** Posisi sensor di orbit + wobble — dipakai modul, link ke paket, dan mesh jaring */
+function sensorWorldPosition(base: THREE.Vector3, index: number, t: number, out: THREE.Vector3) {
+  const phase = index * 1.21;
+  out.copy(base);
+  out.x += Math.sin(t * 0.4 + phase) * 0.052;
+  out.y += Math.cos(t * 0.35 + phase * 1.1) * 0.044;
+  out.z += Math.sin(t * 0.38 + phase * 0.9) * 0.052;
+  return out;
+}
 
 function fibonacciSpherePoints(radius: number, count: number): THREE.Vector3[] {
   const pts: THREE.Vector3[] = [];
@@ -54,17 +64,17 @@ function ParcelPackage({ isOpen, onToggle, onHoverChange }: ParcelPackageProps) 
   const cardboard = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#c9a882",
-        roughness: 0.88,
-        metalness: 0.04,
+        color: "#c4b59a",
+        roughness: 0.9,
+        metalness: 0.02,
       }),
     []
   );
   const tapeMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#9a8570",
-        roughness: 0.75,
+        color: "#8f8173",
+        roughness: 0.78,
         metalness: 0.02,
       }),
     []
@@ -95,9 +105,9 @@ function ParcelPackage({ isOpen, onToggle, onHoverChange }: ParcelPackageProps) 
   const edgeMat = useMemo(
     () =>
       new THREE.LineBasicMaterial({
-        color: "#5c4a3a",
+        color: "#6b5c4c",
         transparent: true,
-        opacity: 0.35,
+        opacity: 0.22,
       }),
     []
   );
@@ -123,8 +133,8 @@ function ParcelPackage({ isOpen, onToggle, onHoverChange }: ParcelPackageProps) 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
     if (groupRef.current) {
-      groupRef.current.rotation.y += 0.0035;
-      groupRef.current.position.y = Math.sin(t * 0.75) * 0.12;
+      groupRef.current.rotation.y += 0.0024;
+      groupRef.current.position.y = Math.sin(t * 0.65) * 0.06;
     }
   });
 
@@ -188,10 +198,10 @@ function ParcelPackage({ isOpen, onToggle, onHoverChange }: ParcelPackageProps) 
           <mesh geometry={lidGeo} material={cardboard} castShadow receiveShadow />
           <lineSegments geometry={edgesLidGeo} material={edgeMat} />
           <mesh position={[0, lidH / 2 + 0.001, 0]} material={tapeMat} castShadow>
-            <boxGeometry args={[1.92, 0.045, 0.14]} />
+            <boxGeometry args={[1.9, 0.038, 0.11]} />
           </mesh>
           <mesh position={[0, lidH / 2 + 0.002, 0]} material={tapeMat} castShadow>
-            <boxGeometry args={[0.14, 0.045, 1.42]} />
+            <boxGeometry args={[0.11, 0.038, 1.38]} />
           </mesh>
         </group>
       </group>
@@ -199,84 +209,93 @@ function ParcelPackage({ isOpen, onToggle, onHoverChange }: ParcelPackageProps) 
   );
 }
 
-/** Satu modul sensor: bodi gelap + LED + cincin status (berkedip tak serempak) */
-function SensorPuck({ index, base }: { index: number; base: THREE.Vector3 }) {
+/** Modul sensor IoT: kotak industrial, LED status amber halus (bukan bola hijau) */
+function SensorModule({ index, base }: { index: number; base: THREE.Vector3 }) {
   const groupRef = useRef<THREE.Group>(null);
   const ledMatRef = useRef<THREE.MeshStandardMaterial>(null);
-  const ringMatRef = useRef<THREE.MeshStandardMaterial>(null);
+  const posScratch = useMemo(() => new THREE.Vector3(), []);
 
-  const bodyGeo = useMemo(() => new THREE.CylinderGeometry(0.13, 0.15, 0.07, 24), []);
-  const ringGeo = useMemo(() => new THREE.TorusGeometry(0.07, 0.014, 8, 28), []);
-  const bodyMat = useMemo(
+  const housingMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#24302f",
-        roughness: 0.55,
-        metalness: 0.35,
+        color: "#5c6470",
+        roughness: 0.72,
+        metalness: 0.18,
       }),
     []
   );
+  const faceMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#3d4450",
+        roughness: 0.82,
+        metalness: 0.12,
+      }),
+    []
+  );
+  const ventMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#2a3038",
+        roughness: 0.9,
+        metalness: 0.05,
+      }),
+    []
+  );
+
   useFrame((state) => {
     const g = groupRef.current;
     const ledM = ledMatRef.current;
-    const ringM = ringMatRef.current;
     if (!g) return;
 
     const t = state.clock.elapsedTime;
-    const phase = index * 1.37;
-    const wobbleX = Math.sin(t * 0.55 + phase) * 0.1;
-    const wobbleY = Math.cos(t * 0.45 + phase * 1.1) * 0.08;
-    const wobbleZ = Math.sin(t * 0.5 + phase * 0.8) * 0.1;
-
-    const p = base.clone().add(new THREE.Vector3(wobbleX, wobbleY, wobbleZ));
-    g.position.copy(p);
+    sensorWorldPosition(base, index, t, posScratch);
+    g.position.copy(posScratch);
     g.lookAt(0, 0, 0);
-    g.rotateX(Math.PI / 2);
 
-    const scalePulse = 0.92 + Math.sin(t * 2.4 + phase) * 0.08;
-    g.scale.setScalar(scalePulse);
-
-    const duty = Math.sin(t * 6.5 + phase) * 0.5 + 0.5;
-    const burst = Math.pow(Math.sin(t * 11 + phase * 0.6) * 0.5 + 0.5, 4);
-    const active = 0.28 + duty * 0.55 + burst * 0.65;
-
-    if (ledM) ledM.emissiveIntensity = active;
-    if (ringM) ringM.emissiveIntensity = 0.15 + duty * 0.85 + burst * 0.4;
+    if (ledM) {
+      const ph = index * 1.21;
+      const slow = Math.sin(t * 1.8 + ph) * 0.5 + 0.5;
+      const ping = Math.pow(Math.sin(t * 3.2 + ph * 0.8) * 0.5 + 0.5, 6);
+      ledM.emissiveIntensity = 0.08 + slow * 0.22 + ping * 0.35;
+    }
   });
 
   useEffect(() => {
     return () => {
-      bodyGeo.dispose();
-      ringGeo.dispose();
-      bodyMat.dispose();
+      housingMat.dispose();
+      faceMat.dispose();
+      ventMat.dispose();
     };
-  }, [bodyGeo, ringGeo, bodyMat]);
+  }, [housingMat, faceMat, ventMat]);
 
+  const dz = 0.03;
   return (
     <group ref={groupRef}>
-      <mesh geometry={bodyGeo} material={bodyMat} castShadow />
-      <mesh position={[0, 0.036, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.09, 24]} />
+      <mesh castShadow receiveShadow material={housingMat}>
+        <boxGeometry args={[0.24, 0.12, 0.06]} />
+      </mesh>
+      <mesh position={[0, 0, dz + 0.001]} material={faceMat}>
+        <boxGeometry args={[0.2, 0.1, 0.009]} />
+      </mesh>
+      {[-0.026, 0, 0.026].map((y) => (
+        <mesh key={y} position={[0, y, dz + 0.007]} material={ventMat}>
+          <boxGeometry args={[0.14, 0.014, 0.005]} />
+        </mesh>
+      ))}
+      <mesh position={[-0.065, 0.034, dz + 0.007]}>
+        <boxGeometry args={[0.026, 0.022, 0.006]} />
         <meshStandardMaterial
           ref={ledMatRef}
-          color="#0d1514"
-          emissive="#22e8b0"
-          emissiveIntensity={0.35}
-          roughness={0.4}
-          metalness={0.2}
+          color="#1a1510"
+          emissive="#e8a54a"
+          emissiveIntensity={0.2}
+          roughness={0.45}
+          metalness={0.15}
         />
       </mesh>
-      <mesh position={[0, 0.038, 0]} rotation={[Math.PI / 2, 0, 0]} geometry={ringGeo}>
-        <meshStandardMaterial
-          ref={ringMatRef}
-          color="#1a2221"
-          emissive="#4af0c8"
-          emissiveIntensity={0.25}
-          roughness={0.35}
-          metalness={0.25}
-          transparent
-          opacity={0.95}
-        />
+      <mesh position={[0.085, 0.048, 0]} material={housingMat} castShadow>
+        <boxGeometry args={[0.02, 0.062, 0.02]} />
       </mesh>
     </group>
   );
@@ -293,11 +312,11 @@ function DataLinksToPackage({ basePositions }: { basePositions: THREE.Vector3[] 
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(arr, 3));
     const m = new THREE.LineDashedMaterial({
-      color: "#5ec4b0",
+      color: "#a8b8c8",
       transparent: true,
-      opacity: 0.5,
-      dashSize: 0.14,
-      gapSize: 0.08,
+      opacity: 0.42,
+      dashSize: 0.11,
+      gapSize: 0.06,
     });
     const ls = new THREE.LineSegments(g, m);
     ls.frustumCulled = false;
@@ -310,11 +329,7 @@ function DataLinksToPackage({ basePositions }: { basePositions: THREE.Vector3[] 
     const t = state.clock.elapsedTime;
     const arr = posAttr.array as Float32Array;
     basePositions.forEach((base, i) => {
-      dummy.copy(base);
-      const phase = i * 0.7;
-      dummy.x += Math.sin(t * 0.55 + phase) * 0.1;
-      dummy.y += Math.cos(t * 0.45 + phase * 1.1) * 0.08;
-      dummy.z += Math.sin(t * 0.5 + phase * 0.8) * 0.1;
+      sensorWorldPosition(base, i, t, dummy);
       const o = i * 6;
       arr[o] = dummy.x;
       arr[o + 1] = dummy.y;
@@ -326,7 +341,7 @@ function DataLinksToPackage({ basePositions }: { basePositions: THREE.Vector3[] 
     posAttr.needsUpdate = true;
     lineSegments.computeLineDistances();
     const dashed = material as THREE.LineDashedMaterial & { dashOffset: number };
-    dashed.dashOffset -= 0.012;
+    dashed.dashOffset -= 0.016;
   });
 
   useEffect(() => {
@@ -339,34 +354,138 @@ function DataLinksToPackage({ basePositions }: { basePositions: THREE.Vector3[] 
   return <primitive object={lineSegments} />;
 }
 
-function NetworkRing() {
-  const ref = useRef<THREE.Mesh>(null);
-  const geo = useMemo(() => new THREE.TorusGeometry(2.15, 0.012, 8, 64), []);
-  const mat = useMemo(
+/** Tiga cincin tipis berbeda sumbu = kesan “medan sensor” mengelilingi paket */
+function SensorFieldRings() {
+  const aRef = useRef<THREE.Mesh>(null);
+  const bRef = useRef<THREE.Mesh>(null);
+  const cRef = useRef<THREE.Mesh>(null);
+  const matA = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
-        color: "#6366f1",
+        color: "#7c8c9c",
         transparent: true,
-        opacity: 0.22,
+        opacity: 0.14,
       }),
     []
   );
+  const matB = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: "#8b9cb0",
+        transparent: true,
+        opacity: 0.1,
+      }),
+    []
+  );
+  const matC = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: "#6b7c8c",
+        transparent: true,
+        opacity: 0.09,
+      }),
+    []
+  );
+  const geoA = useMemo(() => new THREE.TorusGeometry(2.18, 0.007, 8, 72), []);
+  const geoB = useMemo(() => new THREE.TorusGeometry(2.32, 0.006, 8, 72), []);
+  const geoC = useMemo(() => new THREE.TorusGeometry(2.08, 0.006, 8, 64), []);
 
   useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.z = state.clock.elapsedTime * 0.12;
-      ref.current.rotation.x = Math.PI / 2.35;
+    const t = state.clock.elapsedTime;
+    const breathe = 0.85 + Math.sin(t * 0.9) * 0.15;
+    if (aRef.current) {
+      aRef.current.rotation.x = Math.PI / 2.28;
+      aRef.current.rotation.z = t * 0.11;
+      matA.opacity = 0.11 * breathe;
+    }
+    if (bRef.current) {
+      bRef.current.rotation.y = t * 0.09;
+      bRef.current.rotation.x = Math.PI / 2.02;
+      matB.opacity = 0.08 * (0.9 + Math.sin(t * 1.1 + 1) * 0.1);
+    }
+    if (cRef.current) {
+      cRef.current.rotation.z = -t * 0.14;
+      cRef.current.rotation.x = Math.PI / 2.55;
+      cRef.current.rotation.y = Math.sin(t * 0.06) * 0.25;
+      matC.opacity = 0.07 * breathe;
     }
   });
 
   useEffect(() => {
     return () => {
-      geo.dispose();
-      mat.dispose();
+      geoA.dispose();
+      geoB.dispose();
+      geoC.dispose();
+      matA.dispose();
+      matB.dispose();
+      matC.dispose();
     };
-  }, [geo, mat]);
+  }, [geoA, geoB, geoC, matA, matB, matC]);
 
-  return <mesh ref={ref} geometry={geo} material={mat} />;
+  return (
+    <>
+      <mesh ref={aRef} geometry={geoA} material={matA} />
+      <mesh ref={bRef} geometry={geoB} material={matB} />
+      <mesh ref={cRef} geometry={geoC} material={matC} />
+    </>
+  );
+}
+
+/** Garis halus antar sensor (mesh jaring) — sama wobble dengan modul */
+function SensorMeshNetwork({ basePositions }: { basePositions: THREE.Vector3[] }) {
+  const vA = useMemo(() => new THREE.Vector3(), []);
+  const vB = useMemo(() => new THREE.Vector3(), []);
+
+  const { geometry, material, lineSegments } = useMemo(() => {
+    const n = basePositions.length;
+    const pairsPerNode = 3;
+    const segCount = n * pairsPerNode;
+    const arr = new Float32Array(segCount * 2 * 3);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(arr, 3));
+    const m = new THREE.LineBasicMaterial({
+      color: "#9aaaba",
+      transparent: true,
+      opacity: 0.14,
+    });
+    const ls = new THREE.LineSegments(g, m);
+    ls.frustumCulled = false;
+    return { geometry: g, material: m, lineSegments: ls };
+  }, [basePositions.length]);
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    const posAttr = geometry.getAttribute("position") as THREE.BufferAttribute;
+    if (!posAttr) return;
+    const arr = posAttr.array as Float32Array;
+    const n = basePositions.length;
+    let o = 0;
+    const offsets = [1, 5, 11];
+    for (let i = 0; i < n; i++) {
+      for (const off of offsets) {
+        const j = (i + off) % n;
+        sensorWorldPosition(basePositions[i], i, t, vA);
+        sensorWorldPosition(basePositions[j], j, t, vB);
+        arr[o++] = vA.x;
+        arr[o++] = vA.y;
+        arr[o++] = vA.z;
+        arr[o++] = vB.x;
+        arr[o++] = vB.y;
+        arr[o++] = vB.z;
+      }
+    }
+    posAttr.needsUpdate = true;
+    (material as THREE.LineBasicMaterial).opacity = 0.1 + Math.sin(t * 1.4) * 0.045;
+  });
+
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      material.dispose();
+    };
+  }, [geometry, material]);
+
+  return <primitive object={lineSegments} />;
 }
 
 interface SceneContentProps {
@@ -386,13 +505,14 @@ function SceneContent({ onPackageHover }: SceneContentProps) {
       <ambientLight intensity={0.45} />
       <directionalLight position={[6, 8, 5]} intensity={1.1} color="#fff5eb" castShadow />
       <directionalLight position={[-4, 2, -6]} intensity={0.35} color="#b8c5ff" />
-      <pointLight position={[0, 2.5, 2]} intensity={0.55} color="#34d399" distance={10} />
-      <ParcelPackage isOpen={isOpen} onToggle={toggleOpen} onHoverChange={onPackageHover} />
-      <NetworkRing />
-      {basePositions.map((base, i) => (
-        <SensorPuck key={i} index={i} base={base} />
-      ))}
+      <pointLight position={[0, 2.2, 2.2]} intensity={0.35} color="#f1f5f9" distance={12} />
+      <SensorFieldRings />
+      <SensorMeshNetwork basePositions={basePositions} />
       <DataLinksToPackage basePositions={basePositions} />
+      <ParcelPackage isOpen={isOpen} onToggle={toggleOpen} onHoverChange={onPackageHover} />
+      {basePositions.map((base, i) => (
+        <SensorModule key={i} index={i} base={base} />
+      ))}
     </group>
   );
 }
@@ -419,12 +539,21 @@ export default function ThreeScene({ className }: ThreeSceneProps) {
     <div
       ref={wrapperRef}
       className={className}
-      style={{ cursor: packageHover ? "pointer" : undefined }}
+      style={{
+        cursor: packageHover ? "pointer" : undefined,
+        overflow: "visible",
+      }}
     >
       <Canvas
+        className="block h-full w-full touch-none"
         gl={{ antialias: true, alpha: true }}
-        camera={{ fov: 48, position: [0, 0.35, 5.45] }}
-        style={{ background: "transparent" }}
+        camera={{ fov: 47, position: [0, 0.18, 6.55] }}
+        style={{
+          background: "transparent",
+          display: "block",
+          width: "100%",
+          height: "100%",
+        }}
         shadows
       >
         <SceneContent onPackageHover={setPackageHover} />

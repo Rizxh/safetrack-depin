@@ -30,7 +30,7 @@ export default function HeroSection({ ThreeScene }: HeroSectionProps) {
     <section
       id="home"
       ref={sectionRef}
-      className="relative flex min-h-screen flex-col justify-center overflow-hidden px-4 pb-16 pt-28 text-center lg:pt-24"
+      className="relative flex min-h-dvh flex-col justify-center overflow-visible scroll-mt-28 px-4 py-20 text-center sm:py-24 lg:py-20"
     >
       {/* Ambient blobs */}
       <div
@@ -42,8 +42,8 @@ export default function HeroSection({ ThreeScene }: HeroSectionProps) {
         aria-hidden
       />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16 lg:text-left">
-        <div className="flex flex-col items-center lg:items-start">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16 lg:items-center lg:text-left">
+        <div className="relative z-10 flex flex-col items-center lg:items-start">
           <div
             ref={badgeRef}
             className="glass noise-overlay relative mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-[var(--text-secondary)]"
@@ -83,9 +83,9 @@ export default function HeroSection({ ThreeScene }: HeroSectionProps) {
           </div>
         </div>
 
-        {/* GLASS SURFACE — 3D preview */}
-        <div className="noise-overlay glass-strong relative mx-auto h-[min(420px,50vh)] w-full max-w-lg overflow-hidden rounded-2xl p-3 glow-accent lg:mx-0 lg:h-[min(520px,65vh)] lg:max-w-none">
-          <ThreeScene className="h-full w-full opacity-95" />
+        {/* 3D — z-20; tinggi sedikit lebih kecil dari versi besar, tetap nyaman (bukan “mini”) */}
+        <div className="relative z-20 mx-auto flex w-full min-w-0 min-h-[min(460px,58vh)] items-center justify-center overflow-visible lg:mx-0 lg:-mr-2 lg:min-h-[min(600px,72vh)] xl:-mr-4">
+          <ThreeScene className="block h-[min(460px,58vh)] w-full min-h-[340px] overflow-visible lg:h-[min(600px,72vh)] lg:min-h-[420px]" />
         </div>
       </div>
     </section>
