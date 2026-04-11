@@ -2,6 +2,7 @@
   "name": "safetrack-depin",
   "version": "0.1.0",
   "private": true,
+  "description": "SafeTrack | Depin Logistic System",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

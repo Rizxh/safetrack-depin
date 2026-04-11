@@ -1,5 +1,7 @@
 import type { MouseEvent } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { PROJECT_SHORT_NAME } from "@/config/brand";
 
 const scrollOffset = 96;
 
@@ -39,17 +41,25 @@ export default function Footer() {
               className="inline-flex items-center gap-3 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]"
               onClick={(e) => scrollToHash(e, "#home")}
             >
-              <span
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--accent)]/15 font-mono text-sm font-bold tracking-tight text-[var(--accent)]"
-                aria-hidden
-              >
-                ST
-              </span>
+              <Image
+                src="/logo.png"
+                alt=""
+                width={320}
+                height={80}
+                className="h-12 w-auto max-w-[min(260px,80vw)] shrink-0 object-contain object-left sm:h-14 sm:max-w-[min(300px,70vw)] lg:hidden"
+              />
+              <Image
+                src="/icon.png"
+                alt=""
+                width={512}
+                height={512}
+                className="hidden h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20 lg:block"
+              />
               <span className="text-left">
                 <span className="block font-mono text-base font-semibold tracking-tight text-[var(--text-primary)]">
-                  Safetrack
+                  {PROJECT_SHORT_NAME}
                 </span>
-                <span className="mt-0.5 block text-xs text-[var(--text-muted)]">Shipment clarity platform</span>
+                <span className="mt-0.5 block text-xs text-[var(--text-muted)]">Depin Logistic System</span>
               </span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-[var(--text-secondary)]">
@@ -142,7 +152,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col items-start justify-between gap-4 pt-8 sm:flex-row sm:items-center">
-          <p className="text-sm text-[var(--text-muted)]">© 2026 ST. All rights reserved.</p>
+          <p className="text-sm text-[var(--text-muted)]">© 2026 {PROJECT_SHORT_NAME}. All rights reserved.</p>
           <div className="flex flex-wrap gap-6 text-sm text-[var(--text-muted)]">
             <a href="#" className="transition-colors hover:text-[var(--text-secondary)]">
               Privacy

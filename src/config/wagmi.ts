@@ -1,5 +1,6 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { defineChain } from 'viem';
+import { PROJECT_DISPLAY_NAME } from '@/config/brand';
 
 // 0G Network Testnet Configuration
 export const zeroGTestnet = defineChain({
@@ -27,7 +28,7 @@ export const zeroGTestnet = defineChain({
 });
 
 export const wagmiConfig = getDefaultConfig({
-  appName: 'SafeTrack DePIN',
+  appName: PROJECT_DISPLAY_NAME,
   projectId: 'cfeff636de5cb2db8fa76930256dd185',
   chains: [zeroGTestnet],
   ssr: true,

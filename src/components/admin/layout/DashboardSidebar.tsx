@@ -59,9 +59,7 @@ export function DashboardSidebar({
         </div>
         <div>
           <h1 className="text-sm font-semibold text-white-500">SafeTrack</h1>
-          <span className="text-[10px] font-medium tracking-wider text-green-400/80 uppercase">
-            DePIN
-          </span>
+          <span className="text-[10px] font-medium leading-tight text-green-400/90">Depin Logistic System</span>
         </div>
         <button
           onClick={onMobileClose}

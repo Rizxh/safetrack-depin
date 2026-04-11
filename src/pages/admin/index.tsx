@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import { PROJECT_DISPLAY_NAME } from "@/config/brand";
 
 const AdminClient = dynamic(() => import("@/components/admin/AdminClient"), {
   ssr: false,
@@ -14,7 +15,7 @@ export default function AdminDashboardPage() {
   return (
     <>
       <Head>
-        <title>Admin Dashboard | Safetrack DePIN</title>
+        <title>{`Admin Dashboard | ${PROJECT_DISPLAY_NAME}`}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <AdminClient />

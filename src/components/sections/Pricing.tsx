@@ -30,7 +30,7 @@ export default function Pricing() {
     <section id="pricing" className="px-4 py-20">
       <div className="mx-auto max-w-6xl">
         <p className="text-xs font-medium uppercase tracking-widest text-teal-400">PRICING</p>
-        <h2 className="mt-3 text-3xl font-medium text-ink-primary">Two ways to use Safetrack</h2>
+        <h2 className="mt-3 text-3xl font-medium text-ink-primary">Two ways to use SafeTrack</h2>
         <p className="mt-2 text-sm text-ink-secondary">Consumer or enterprise - we have you covered.</p>
 
         <div className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-6 md:grid-cols-2">
@@ -57,7 +57,7 @@ export default function Pricing() {
             <span className="rounded-full border border-teal-200 bg-teal-50 px-2 py-0.5 text-xs text-teal-800">B2B</span>
             <h3 className="mt-4 text-xl font-medium text-ink-primary">Logistics Partner</h3>
             <p className="mt-2 text-sm leading-relaxed text-ink-secondary">
-              Integrate Safetrack into your fleet. Offer premium secure shipping as a paid add-on to customers.
+              Integrate SafeTrack into your fleet. Offer premium secure shipping as a paid add-on to customers.
             </p>
             <ul className="mt-5 space-y-2">
               {b2bFeatures.map((feature) => (

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useRouter } from "next/router";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { PROJECT_SHORT_NAME } from "@/config/brand";
 
 const links = [
   { label: "About", href: "#about" },
@@ -192,10 +194,24 @@ export default function Navbar() {
           <button
             type="button"
             onClick={scrollHome}
-            className="shrink-0 font-mono text-sm font-semibold tracking-tight text-[var(--text-primary)]"
-            aria-label="Safetrack home"
+            className="flex shrink-0 items-center gap-2 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            aria-label={`${PROJECT_SHORT_NAME} home`}
           >
-            Safetrack
+            <Image
+              src="/logo.png"
+              alt=""
+              width={320}
+              height={80}
+              className="h-9 w-auto max-w-[min(200px,58vw)] shrink-0 object-contain object-left sm:h-10 sm:max-w-[min(240px,52vw)] lg:hidden"
+              priority
+            />
+            <Image
+              src="/icon.png"
+              alt=""
+              width={512}
+              height={512}
+              className="hidden h-14 w-14 shrink-0 object-contain lg:block lg:h-[4.75rem] lg:w-[4.75rem]"
+            />
           </button>
 
           <div className="hidden flex-1 items-center justify-center gap-1 lg:flex">

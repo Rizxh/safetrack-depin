@@ -4,7 +4,7 @@ import { LandingSectionHeader } from "@/components/layout/LandingSectionHeader";
 
 const faqs = [
   {
-    q: "How does Safetrack detect package damage?",
+    q: "How does SafeTrack detect package damage?",
     a: "ESP32 sensors capture shock, temperature, and humidity. The model scores anomalies in near real time.",
   },
   {
@@ -34,7 +34,7 @@ export default function FaqSection() {
           <LandingSectionHeader
             label="FAQ"
             title="Common questions"
-            description="Straight answers on sensors, proofs, and how teams adopt Safetrack."
+            description="Straight answers on sensors, proofs, and how teams adopt SafeTrack."
           />
 
           <div className="glass noise-overlay mt-12 overflow-hidden rounded-2xl md:mt-14">
