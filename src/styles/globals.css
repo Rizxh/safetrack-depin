@@ -367,3 +367,29 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
+
+/* MapLibre GL Styles */
+.mapboxgl-map {
+  font-family: var(--font-sans), sans-serif;
+}
+
+.mapboxgl-popup-content {
+  background: #1a1a1a !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: #1a1a1a !important;
+}
+
+.mapboxgl-ctrl-group {
+  background: rgba(0, 0, 0, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.mapboxgl-ctrl-icon {
+  filter: invert(1);
+}

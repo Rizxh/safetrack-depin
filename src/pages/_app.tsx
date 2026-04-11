@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Syne, JetBrains_Mono } from "next/font/google";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { Web3Provider } from "@/providers/WagmiProvider";
 
 const syne = Syne({
