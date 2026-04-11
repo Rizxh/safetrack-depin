@@ -31,9 +31,10 @@ function scrollToHash(e: MouseEvent<HTMLAnchorElement>, href: string) {
 
 export default function Footer() {
   return (
-    <footer className="landing-section-x border-t border-[var(--glass-border)]/80 bg-[var(--bg-base)]/80 pb-10 pt-16">
-      <div className="landing-content">
-        <div className="grid gap-12 border-b border-[var(--glass-border)]/60 pb-14 md:grid-cols-2 lg:grid-cols-12 lg:gap-10">
+    <footer className="w-full min-w-0 border-t border-[var(--glass-border)]/80 bg-[var(--bg-base)]/95 pb-10 pt-16">
+      <div className="landing-section-x w-full max-w-none">
+        <div className="landing-content">
+          <div className="grid gap-12 border-b border-[var(--glass-border)]/60 pb-14 md:grid-cols-2 lg:grid-cols-12 lg:gap-10">
           {/* Brand */}
           <div className="lg:col-span-4">
             <Link
@@ -46,14 +47,14 @@ export default function Footer() {
                 alt=""
                 width={320}
                 height={80}
-                className="h-16 w-auto max-w-[min(260px,80vw)] shrink-0 object-contain object-left sm:h-20 sm:max-w-[min(300px,70vw)] lg:block scale-[2.5] origin-left"
+                className="h-12 w-auto max-w-[min(240px,88vw)] shrink-0 object-contain object-left sm:h-16 sm:max-w-[min(280px,75vw)] lg:hidden"
               />
               <Image
                 src="/icon.png"
                 alt=""
                 width={512}
                 height={512}
-                className="hidden h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20 lg:hidden"
+                className="hidden h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20 lg:block"
               />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-[var(--text-secondary)]">
@@ -143,9 +144,9 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-        </div>
+          </div>
 
-        <div className="flex flex-col items-start justify-between gap-4 pt-8 sm:flex-row sm:items-center">
+          <div className="flex flex-col items-start justify-between gap-4 pt-8 sm:flex-row sm:items-center">
           <p className="text-sm text-[var(--text-muted)]">© 2026 {PROJECT_SHORT_NAME}. All rights reserved.</p>
           <div className="flex flex-wrap gap-6 text-sm text-[var(--text-muted)]">
             <a href="#" className="transition-colors hover:text-[var(--text-secondary)]">
@@ -157,6 +158,7 @@ export default function Footer() {
             <a href="#" className="transition-colors hover:text-[var(--text-secondary)]">
               Security
             </a>
+          </div>
           </div>
         </div>
       </div>

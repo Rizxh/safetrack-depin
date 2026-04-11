@@ -327,7 +327,7 @@
 
 .scroll-reveal--out {
   opacity: 0;
-  transform: translate3d(0, 14px, 0);
+  transform: translate3d(0, 10px, 0);
 }
 
 .scroll-reveal--in {
@@ -339,8 +339,8 @@
   .scroll-reveal.scroll-reveal--armed.scroll-reveal--in,
   .scroll-reveal.scroll-reveal--armed.scroll-reveal--out {
     transition:
-      opacity 0.5s ease,
-      transform 0.5s ease;
+      opacity 0.2s cubic-bezier(0.33, 1, 0.68, 1),
+      transform 0.2s cubic-bezier(0.33, 1, 0.68, 1);
   }
 }
 

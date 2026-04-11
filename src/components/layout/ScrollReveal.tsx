@@ -31,7 +31,7 @@ export function ScrollReveal({ children, className }: ScrollRevealProps) {
 
     const io = new IntersectionObserver(
       ([e]) => setVisible(e.isIntersecting),
-      { threshold: [0, 0.08, 0.15], rootMargin: "0px 0px -8% 0px" }
+      { threshold: [0, 0.06, 0.12], rootMargin: "0px 0px -4% 0px" }
     );
     io.observe(el);
 
@@ -49,7 +49,7 @@ export function ScrollReveal({ children, className }: ScrollRevealProps) {
     <div
       ref={ref}
       className={cn(
-        "scroll-reveal",
+        "scroll-reveal w-full min-w-0",
         armed && "scroll-reveal--armed",
         visible ? "scroll-reveal--in" : "scroll-reveal--out",
         className
