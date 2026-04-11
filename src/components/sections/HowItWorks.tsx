@@ -1,24 +1,36 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SectionHeading, StepCard } from "@/components/ui";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const steps = [
   {
-    title: "Attach the device",
+    number: "01",
+    title: "ATTACH THE DEVICE",
     description:
       "Clip our ESP32 sensor inside the package. It reads shock, temperature, and humidity every second.",
+    color: "#FF6B00",
+    bgColor: "bg-[#FFE5CC]",
   },
   {
-    title: "AI monitors in real-time",
+    number: "02",
+    title: "AI MONITORS IN REAL-TIME",
     description:
       "Our ML model predicts safety score continuously. Alerts fire the moment anomalies are detected.",
+    color: "#00F0FF",
+    bgColor: "bg-[#CCF9FF]",
   },
   {
-    title: "Claim with proof",
+    number: "03",
+    title: "CLAIM WITH PROOF",
     description:
       "Every event is stored on 0G Network - immutable, verifiable. File claims backed by tamper-proof data.",
+    color: "#00FF66",
+    bgColor: "bg-[#CCFFE0]",
   },
 ];
 
@@ -30,14 +42,14 @@ export default function HowItWorks() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         cardsRef.current,
-        { y: 30, opacity: 0 },
+        { y: 50, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.15,
+          stagger: 0.2,
           duration: 0.7,
           ease: "power2.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
+          scrollTrigger: { trigger: sectionRef.current, start: "top 70%", once: true },
         }
       );
     }, sectionRef);
@@ -48,26 +60,24 @@ export default function HowItWorks() {
   }, []);
 
   return (
-    <section id="how-it-works" ref={sectionRef} className="px-4 py-20">
-      <div className="mx-auto max-w-6xl">
-        <p className="text-xs font-medium uppercase tracking-widest text-teal-400">HOW IT WORKS</p>
-        <h2 className="mt-3 text-3xl font-medium text-ink-primary">Three steps to full shipment confidence</h2>
-        <p className="mt-2 text-sm text-ink-secondary">From hardware to dashboard in minutes.</p>
+    <section id="how-it-works" ref={sectionRef} className="border-y-4 border-black bg-white px-4 py-16 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <SectionHeading
+          badge="HOW IT WORKS"
+          title="THREE STEPS TO"
+          highlight="FULL CONFIDENCE"
+          description="From hardware to dashboard in minutes."
+        />
 
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
           {steps.map((step, idx) => (
             <div
               key={step.title}
               ref={(el) => {
                 cardsRef.current[idx] = el;
               }}
-              className="rounded-2xl border border-ink-muted/10 bg-surface-secondary p-5"
             >
-              <div className="mb-4 flex h-8 w-8 items-center justify-center rounded-full border border-teal-400 text-sm font-medium text-teal-400">
-                {idx + 1}
-              </div>
-              <h3 className="text-base font-medium text-ink-primary">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-secondary">{step.description}</p>
+              <StepCard {...step} />
             </div>
           ))}
         </div>

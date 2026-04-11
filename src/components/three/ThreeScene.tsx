@@ -15,9 +15,9 @@ function PackageBox() {
   const material = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#1D9E75",
-        metalness: 0.2,
-        roughness: 0.6,
+        color: "#FF6B00",
+        metalness: 0,
+        roughness: 1,
       }),
     []
   );
@@ -25,9 +25,8 @@ function PackageBox() {
   const edgeMaterial = useMemo(
     () =>
       new THREE.LineBasicMaterial({
-        color: "#ffffff",
-        transparent: true,
-        opacity: 0.25,
+        color: "#000000",
+        linewidth: 4,
       }),
     []
   );
@@ -71,16 +70,29 @@ function SensorNodes() {
     ],
     []
   );
-  const sphereGeometry = useMemo(() => new THREE.SphereGeometry(0.12, 16, 16), []);
+  const sphereGeometry = useMemo(() => new THREE.SphereGeometry(0.15, 16, 16), []);
   const sphereMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#5DCAA5",
-        emissive: "#1D9E75",
-        emissiveIntensity: 0.3,
+        color: "#00F0FF",
+        emissive: "#00F0FF",
+        emissiveIntensity: 0.5,
+        metalness: 0,
+        roughness: 1,
       }),
     []
   );
+
+  const edgeMaterial = useMemo(
+    () =>
+      new THREE.LineBasicMaterial({
+        color: "#000000",
+        linewidth: 3,
+      }),
+    []
+  );
+
+  const sphereEdges = useMemo(() => new THREE.EdgesGeometry(sphereGeometry), [sphereGeometry]);
 
   useFrame((state) => {
     if (!groupRef.current) return;
@@ -100,13 +112,18 @@ function SensorNodes() {
     return () => {
       sphereGeometry.dispose();
       sphereMaterial.dispose();
+      sphereEdges.dispose();
+      edgeMaterial.dispose();
     };
-  }, [sphereGeometry, sphereMaterial]);
+  }, [edgeMaterial, sphereEdges, sphereGeometry, sphereMaterial]);
 
   return (
     <group ref={groupRef}>
       {baseNodes.map((node, idx) => (
-        <mesh key={`sensor-${idx}`} position={node} geometry={sphereGeometry} material={sphereMaterial} />
+        <group key={`sensor-${idx}`} position={node}>
+          <mesh geometry={sphereGeometry} material={sphereMaterial} />
+          <lineSegments geometry={sphereEdges} material={edgeMaterial} />
+        </group>
       ))}
     </group>
   );
@@ -118,11 +135,12 @@ function DataLine({ index }: { index: number }) {
   const material = useMemo(
     () =>
       new THREE.LineDashedMaterial({
-        color: "#9FE1CB",
-        transparent: true,
-        opacity: 0.5,
-        dashSize: 0.1,
-        gapSize: 0.05,
+        color: "#FF6B00",
+        transparent: false,
+        opacity: 1,
+        dashSize: 0.15,
+        gapSize: 0.08,
+        linewidth: 3,
       }),
     []
   );
@@ -188,9 +206,9 @@ export default function ThreeScene({ className }: ThreeSceneProps) {
         camera={{ fov: 60, position: [0, 0, 6] }}
         style={{ background: "transparent" }}
       >
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[5, 5, 5]} intensity={1.2} color="white" />
-        <pointLight position={[-3, 3, -3]} intensity={0.8} color="#1D9E75" />
+        <ambientLight intensity={0.8} />
+        <directionalLight position={[5, 5, 5]} intensity={1} color="white" />
+        <directionalLight position={[-5, -5, -5]} intensity={0.5} />
         <PackageBox />
         <SensorNodes />
         <DataLines />

@@ -1,13 +1,27 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { Inter } from "next/font/google";
+import { Syne, JetBrains_Mono } from "next/font/google";
+import { Web3Provider } from "@/providers/WagmiProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const syne = Syne({
+  weight: ["400", "700", "800"],
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <div className={inter.className}>
-      <Component {...pageProps} />
-    </div>
+    <Web3Provider>
+      <div className={`${syne.variable} ${jetbrainsMono.variable} font-mono`}>
+        <Component {...pageProps} />
+      </div>
+    </Web3Provider>
   );
 }

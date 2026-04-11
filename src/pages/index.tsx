@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-import { Inter } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/sections/HeroSection";
@@ -14,11 +13,9 @@ const ThreeScene = dynamic(() => import("@/components/three/ThreeScene"), {
   loading: () => <div className="h-full w-full bg-transparent" />,
 });
 
-const inter = Inter({ subsets: ["latin"] });
-
 export default function Home() {
   return (
-    <main className={inter.className}>
+    <main>
       <Navbar />
       <HeroSection ThreeScene={ThreeScene} />
       <LiveSensorCard />

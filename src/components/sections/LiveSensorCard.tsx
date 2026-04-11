@@ -28,9 +28,21 @@ const mockPrediction: PredictionResult = {
 };
 
 const statusStyles = {
-  SAFE: "border-teal-200 bg-teal-50 text-teal-800",
-  WARNING: "border-amber-200 bg-amber-50 text-amber-800",
-  DANGER: "border-red-200 bg-red-50 text-red-800",
+  SAFE: {
+    bg: "bg-[#CCFF00]",
+    text: "text-black",
+    border: "border-[#000000]",
+  },
+  WARNING: {
+    bg: "bg-[#FFB800]",
+    text: "text-black",
+    border: "border-[#000000]",
+  },
+  DANGER: {
+    bg: "bg-[#FF3D00]",
+    text: "text-white",
+    border: "border-[#000000]",
+  },
 };
 
 export default function LiveSensorCard() {
@@ -74,82 +86,125 @@ export default function LiveSensorCard() {
     };
   }, []);
 
+  const currentStatus = statusStyles[mockPrediction.status];
+
   return (
-    <section ref={sectionRef} className="px-4 py-16">
-      <div ref={cardRef} className="mx-auto max-w-3xl rounded-2xl border border-ink-muted/20 bg-surface-secondary p-6">
-        <div className="mb-6 flex items-center justify-between">
-          <p className="text-sm text-ink-secondary">Live sensor preview - SHIP-2024-001</p>
-          <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-2 py-0.5 text-xs text-teal-800">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-teal-400" />
-            Live
+    <section id="live-sensor" ref={sectionRef} className="border-y-4 border-black bg-[#F4F4F4] px-4 py-16 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8">
+          <div className="inline-block border-4 border-black bg-[#FF00FF] px-3 py-1">
+            <p className="text-xs font-bold uppercase text-white">LIVE PREVIEW</p>
           </div>
+          <h2 className="mt-4 font-display text-2xl font-bold leading-tight text-black sm:text-3xl md:text-4xl">
+            REAL-TIME
+            <br />
+            <span className="inline-block border-4 border-black bg-[#2979FF] px-4 py-1 text-white shadow-[4px_4px_0px_#000000]">
+              SENSOR DASHBOARD
+            </span>
+          </h2>
         </div>
 
-        <div className="mb-6 flex items-end justify-between gap-4">
-          <div>
-            <div className="text-6xl font-medium text-teal-400">{mockPrediction.safety_score}%</div>
-            <p className="mt-1 text-xs text-ink-muted">Safety score</p>
+        <div
+          ref={cardRef}
+          className="border-4 border-black bg-white p-8 shadow-[12px_12px_0px_#000000] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-[10px_10px_0px_#000000]"
+        >
+          {/* Header */}
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b-4 border-black pb-6">
+            <div>
+              <div className="inline-block border-4 border-black bg-[#FFB800] px-3 py-1">
+                <p className="text-xs font-black uppercase">SHIP-2024-001</p>
+              </div>
+              <p className="mt-2 font-display text-3xl font-black">ESP32 SENSOR</p>
+            </div>
+            <div className="flex items-center gap-3 border-4 border-black bg-[#CCFF00] px-6 py-3 shadow-[6px_6px_0px_#000000]">
+              <span className="h-4 w-4 animate-pulse rounded-full bg-black" />
+              <span className="text-base font-black uppercase">Live</span>
+            </div>
           </div>
-          <div
-            className={`rounded-full border px-3 py-1 text-xs font-medium ${statusStyles[mockPrediction.status]}`}
-          >
-            {mockPrediction.status}
-          </div>
-        </div>
 
-        <div className="mb-6 grid grid-cols-3 gap-2">
-          <div className="rounded-xl border border-ink-muted/10 bg-surface-primary p-3">
-            <p className="text-xs text-ink-muted">Shock freq</p>
-            <p className="mt-1 text-sm text-ink-primary">{mockSensor.shock_freq_hz} Hz</p>
+          {/* Safety Score */}
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-6 border-b-4 border-black pb-8">
+            <div>
+              <div className="font-display text-8xl font-black leading-none text-[#CCFF00]">
+                {mockPrediction.safety_score}%
+              </div>
+              <p className="mt-3 text-base font-black uppercase text-black">Safety Score</p>
+            </div>
+            <div
+              className={`border-4 border-black px-8 py-4 text-2xl font-black shadow-[6px_6px_0px_#000000] ${currentStatus.bg} ${currentStatus.text}`}
+            >
+              {mockPrediction.status}
+            </div>
           </div>
-          <div className="rounded-xl border border-ink-muted/10 bg-surface-primary p-3">
-            <p className="text-xs text-ink-muted">Temperature</p>
-            <p className="mt-1 text-sm text-ink-primary">{mockSensor.temperature_c} C</p>
-          </div>
-          <div className="rounded-xl border border-ink-muted/10 bg-surface-primary p-3">
-            <p className="text-xs text-ink-muted">Humidity</p>
-            <p className="mt-1 text-sm text-ink-primary">{mockSensor.humidity_pct}%</p>
-          </div>
-          <div className="rounded-xl border border-ink-muted/10 bg-surface-primary p-3">
-            <p className="text-xs text-ink-muted">G-force X</p>
-            <p className="mt-1 text-sm text-ink-primary">{mockSensor.ax.toFixed(2)}</p>
-          </div>
-          <div className="rounded-xl border border-ink-muted/10 bg-surface-primary p-3">
-            <p className="text-xs text-ink-muted">G-force Z</p>
-            <p className="mt-1 text-sm text-ink-primary">{mockSensor.az.toFixed(2)}</p>
-          </div>
-          <div className="rounded-xl border border-ink-muted/10 bg-surface-primary p-3">
-            <p className="text-xs text-ink-muted">AI inference</p>
-            <p className="mt-1 text-sm text-ink-primary">{mockSensor.inference_ms} ms</p>
-          </div>
-        </div>
 
-        <div className="space-y-4">
-          <div>
-            <div className="mb-1 flex items-center justify-between text-xs text-ink-secondary">
-              <span>P(SAFE)</span>
-              <span>{Math.round(mockPrediction.probabilities.SAFE * 100)}%</span>
+          {/* Sensor Metrics Grid */}
+          <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3">
+            <div className="border-4 border-black bg-white p-5 shadow-[4px_4px_0px_#000000]">
+              <p className="text-xs font-black uppercase text-black">Shock Freq</p>
+              <p className="mt-2 font-heading text-3xl font-black text-black">{mockSensor.shock_freq_hz} <span className="text-lg">Hz</span></p>
             </div>
-            <div className="h-1.5 rounded-full border border-ink-muted/10 bg-surface-primary">
-              <div ref={safeBarRef} className="h-full rounded-full bg-teal-400" style={{ width: "0%" }} />
+            <div className="border-4 border-black bg-[#FFE5CC] p-5 shadow-[4px_4px_0px_#000000]">
+              <p className="text-xs font-black uppercase text-black">Temperature</p>
+              <p className="mt-2 font-heading text-3xl font-black text-black">{mockSensor.temperature_c}°C</p>
+            </div>
+            <div className="border-4 border-black bg-[#CCF9FF] p-5 shadow-[4px_4px_0px_#000000]">
+              <p className="text-xs font-black uppercase text-black">Humidity</p>
+              <p className="mt-2 font-heading text-3xl font-black text-black">{mockSensor.humidity_pct}%</p>
+            </div>
+            <div className="border-4 border-black bg-white p-5 shadow-[4px_4px_0px_#000000]">
+              <p className="text-xs font-black uppercase text-black">G-force X</p>
+              <p className="mt-2 font-heading text-3xl font-black text-black">{mockSensor.ax.toFixed(2)}</p>
+            </div>
+            <div className="border-4 border-black bg-white p-5 shadow-[4px_4px_0px_#000000]">
+              <p className="text-xs font-black uppercase text-black">G-force Z</p>
+              <p className="mt-2 font-heading text-3xl font-black text-black">{mockSensor.az.toFixed(2)}</p>
+            </div>
+            <div className="border-4 border-black bg-[#CCFFE0] p-5 shadow-[4px_4px_0px_#000000]">
+              <p className="text-xs font-black uppercase text-black">AI Inference</p>
+              <p className="mt-2 font-heading text-3xl font-black text-black">{mockSensor.inference_ms} <span className="text-lg">ms</span></p>
             </div>
           </div>
-          <div>
-            <div className="mb-1 flex items-center justify-between text-xs text-ink-secondary">
-              <span>P(WARNING)</span>
-              <span>{Math.round(mockPrediction.probabilities.WARNING * 100)}%</span>
+
+          {/* Probability Bars */}
+          <div className="space-y-5">
+            <div>
+              <div className="mb-2 flex items-center justify-between text-base font-black text-black">
+                <span>P(SAFE)</span>
+                <span className="border-4 border-black bg-[#CCFF00] px-3 py-1 text-black">{Math.round(mockPrediction.probabilities.SAFE * 100)}%</span>
+              </div>
+              <div className="h-8 border-4 border-black bg-white shadow-[4px_4px_0px_#000000]">
+                <div
+                  ref={safeBarRef}
+                  className="h-full bg-[#CCFF00] transition-all"
+                  style={{ width: "0%" }}
+                />
+              </div>
             </div>
-            <div className="h-1.5 rounded-full border border-ink-muted/10 bg-surface-primary">
-              <div ref={warningBarRef} className="h-full rounded-full" style={{ width: "0%", background: "#EF9F27" }} />
+            <div>
+              <div className="mb-2 flex items-center justify-between text-base font-black text-black">
+                <span>P(WARNING)</span>
+                <span className="border-4 border-black bg-[#FFB800] px-3 py-1 text-black">{Math.round(mockPrediction.probabilities.WARNING * 100)}%</span>
+              </div>
+              <div className="h-8 border-4 border-black bg-white shadow-[4px_4px_0px_#000000]">
+                <div
+                  ref={warningBarRef}
+                  className="h-full bg-[#FFB800] transition-all"
+                  style={{ width: "0%" }}
+                />
+              </div>
             </div>
-          </div>
-          <div>
-            <div className="mb-1 flex items-center justify-between text-xs text-ink-secondary">
-              <span>P(DANGER)</span>
-              <span>{Math.round(mockPrediction.probabilities.DANGER * 100)}%</span>
-            </div>
-            <div className="h-1.5 rounded-full border border-ink-muted/10 bg-surface-primary">
-              <div ref={dangerBarRef} className="h-full rounded-full" style={{ width: "0%", background: "#E24B4A" }} />
+            <div>
+              <div className="mb-2 flex items-center justify-between text-base font-black text-black">
+                <span>P(DANGER)</span>
+                <span className="border-4 border-black bg-[#FF3D00] px-3 py-1 text-white">{Math.round(mockPrediction.probabilities.DANGER * 100)}%</span>
+              </div>
+              <div className="h-8 border-4 border-black bg-white shadow-[4px_4px_0px_#000000]">
+                <div
+                  ref={dangerBarRef}
+                  className="h-full bg-[#FF3D00] transition-all"
+                  style={{ width: "0%" }}
+                />
+              </div>
             </div>
           </div>
         </div>

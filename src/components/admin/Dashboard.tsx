@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from "react";
 import { DashboardSidebar } from "./layout/DashboardSidebar";
 import { OverviewSection } from "./views/OverviewSection";
@@ -10,8 +12,9 @@ import { PredictionsSection } from "./views/PredictionsSection";
 import { SettingsSection } from "./views/SettingsSection";
 import { ClaimsSection } from "./views/ClaimSection";
 import { LifecycleSection } from "./views/LifecycleSection";
-import { Menu, Wallet } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function Dashboard() {
   const [activeSection, setActiveSection] = useState<string>("overview");
@@ -93,16 +96,19 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Tombol Connect Wallet untuk Web3 / MetaMask */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden sm:flex items-center gap-2 rounded-full border-primary/50 hover:bg-primary/10 cursor-pointer">
-              <Wallet className="h-4 w-4 text-primary" />
-              <span className="font-medium">Connect Wallet</span>
-            </Button>
+            {/* RainbowKit ConnectButton */}
+            <ConnectButton
+              accountStatus={{
+                smallScreen: 'avatar',
+                largeScreen: 'full',
+              }}
+              showBalance={{
+                smallScreen: false,
+                largeScreen: true,
+              }}
+            />
 
-            {/* Slot User Profile */}
+            {/* Slot User Profile - shown only when wallet is connected */}
             <div className="h-8 w-8 rounded-full bg-secondary border border-border flex items-center justify-center shrink-0">
               <span className="text-xs font-bold text-muted-foreground">
                 0x
