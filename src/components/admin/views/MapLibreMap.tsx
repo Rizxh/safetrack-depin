@@ -1,60 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  Package,
-  AlertCircle,
-  Loader2,
-  X,
-  MapPin,
-  Activity,
-  Cpu,
-  Battery,
-  Signal,
-  Clock,
-  Shield,
-} from "lucide-react";
+import { Package, AlertCircle, Loader2 } from "lucide-react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { ShipmentRecord } from "@/data/mockData";
-import { cn } from "@/lib/utils";
+import { shipmentCoordinates } from "@/data/shipmentCoordinates";
 
-function formatTelemetryTime(iso: string): string {
-  try {
-    return new Date(iso).toLocaleString(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
-  } catch {
-    return iso;
-  }
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
-
-function shortHash(hash: string): string {
-  if (hash.length <= 22) return hash;
-  return `${hash.slice(0, 12)}…${hash.slice(-8)}`;
-}
-
-const statusUi = {
-  healthy: {
-    label: "Healthy",
-    dot: "bg-emerald-500",
-    bar: "from-emerald-500 to-teal-600",
-    badge: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25",
-  },
-  warning: {
-    label: "Warning",
-    dot: "bg-amber-500",
-    bar: "from-amber-500 to-orange-600",
-    badge: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/25",
-  },
-  critical: {
-    label: "Critical",
-    dot: "bg-red-500",
-    bar: "from-red-500 to-rose-700",
-    badge: "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/25",
-  },
-} as const;
 
 interface MapLibreMapProps {
   shipments: ShipmentRecord[];
@@ -62,21 +21,6 @@ interface MapLibreMapProps {
   onBoxSelect: (boxId: string | null) => void;
 }
 
-// Coordinates for all shipments (from mockData)
-const shipmentCoordinates: Record<string, [number, number]> = {
-  "BOX-7A12": [9.9937, 53.5511], // Hamburg, DE
-  "BOX-3K49": [4.3175, 52.0807], // Rotterdam, NL
-  "BOX-9M22": [4.4017, 51.2214], // Antwerp, BE
-  "BOX-1P87": [121.4737, 31.2304], // Shanghai, CN
-  "BOX-5T63": [103.8198, 1.3521], // Singapore, SG
-  "BOX-8R41": [55.2708, 25.2048], // Dubai, AE
-  "BOX-2V98": [139.6917, 35.6895], // Tokyo, JP
-  "BOX-6W15": [3.3792, 6.5244], // Lagos, NG
-  "BOX-4X77": [-74.0060, 40.7128], // New York, US
-  "BOX-0Y34": [-46.6539, -23.4647], // São Paulo, BR
-};
-
-// Get icon SVG based on status
 const getStatusIcon = (status: string): string => {
   switch (status) {
     case "healthy":
@@ -129,31 +73,31 @@ export function MapLibreMap({ shipments, selectedBox, onBoxSelect }: MapLibreMap
       try {
         setIsLoading(true);
 
-        // Initialize the map with OpenFreeMap bright style (GLOBAL VIEW)
         const map = new maplibregl.Map({
           container: mapContainer.current,
-          style: 'https://tiles.openfreemap.org/styles/bright',
-          center: [0, 20], // Center of the world (Atlantic, near equator)
-          zoom: 1.5, // Zoom level to show entire world
+          style: "https://tiles.openfreemap.org/styles/bright",
+          center: [0, 20],
+          zoom: 1.5,
         });
 
-        map.on('load', () => {
+        map.on("load", () => {
           setIsLoading(false);
           setTimeout(() => map.resize(), 100);
         });
 
-        map.on('error', (e: any) => {
-          setError('Failed to load map tiles');
+        map.on("error", () => {
+          setError("Failed to load map tiles");
           setIsLoading(false);
         });
 
         mapRef.current = map;
 
-        // Add navigation control
-        map.addControl(new maplibregl.NavigationControl({ showCompass: true, showZoom: true }), 'top-right');
-
+        map.addControl(
+          new maplibregl.NavigationControl({ showCompass: true, showZoom: true }),
+          "top-right",
+        );
       } catch (err) {
-        setError('Failed to initialize map: ' + (err as Error).message);
+        setError("Failed to initialize map: " + (err as Error).message);
         setIsLoading(false);
       }
     }, 100);
@@ -181,29 +125,27 @@ export function MapLibreMap({ shipments, selectedBox, onBoxSelect }: MapLibreMap
     });
   }, [selectedBox, isLoading]);
 
-  // Update markers when shipments or selection changes
   useEffect(() => {
     const map = mapRef.current;
     if (!map || isLoading) return;
 
-    // Clear existing markers
-    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
 
-    // Add markers for each shipment
     shipments.forEach((shipment) => {
       const coords = shipmentCoordinates[shipment.boxId];
       if (!coords) return;
 
       const statusColors = {
-        healthy: '#14b8a6',
-        warning: '#f59e0b',
-        critical: '#ef4444',
+        healthy: "#14b8a6",
+        warning: "#f59e0b",
+        critical: "#ef4444",
       };
 
-      // Create custom marker element
-      const el = document.createElement('div');
-      el.className = 'shipment-marker';
+      const [lng, lat] = coords;
+
+      const el = document.createElement("div");
+      el.className = "shipment-marker";
 
       el.style.cssText = `
         width: 36px;
@@ -247,8 +189,24 @@ export function MapLibreMap({ shipments, selectedBox, onBoxSelect }: MapLibreMap
         }
       });
 
+      const popup = new maplibregl.Popup({
+        offset: 20,
+        closeButton: true,
+        closeOnClick: true,
+        maxWidth: "200px",
+      }).setHTML(`
+        <div style="font-family:system-ui,-apple-system,sans-serif;padding:2px 2px 4px;min-width:132px">
+          <div style="font-weight:600;font-size:13px;margin-bottom:8px;color:#fafafa">${escapeHtml(shipment.boxId)}</div>
+          <div style="font-size:11px;line-height:1.55;color:#d4d4d8">
+            <div style="display:flex;justify-content:space-between;gap:8px"><span style="color:#a1a1aa">Latitude</span><span style="font-variant-numeric:tabular-nums">${lat.toFixed(5)}°</span></div>
+            <div style="display:flex;justify-content:space-between;gap:8px;margin-top:4px"><span style="color:#a1a1aa">Longitude</span><span style="font-variant-numeric:tabular-nums">${lng.toFixed(5)}°</span></div>
+          </div>
+        </div>
+      `);
+
       const marker = new maplibregl.Marker({ element: el })
         .setLngLat(coords)
+        .setPopup(popup)
         .addTo(map);
 
       el.addEventListener("click", (e) => {
@@ -256,202 +214,54 @@ export function MapLibreMap({ shipments, selectedBox, onBoxSelect }: MapLibreMap
         const isSame = selectedBox === shipment.boxId;
         if (isSame) {
           onBoxSelect(null);
+          if (marker.getPopup().isOpen()) marker.togglePopup();
           return;
         }
         onBoxSelect(shipment.boxId);
+        markersRef.current.forEach((m) => {
+          if (m.getPopup().isOpen()) m.togglePopup();
+        });
+        if (!marker.getPopup().isOpen()) marker.togglePopup();
       });
 
       markersRef.current.push(marker);
     });
-
   }, [shipments, selectedBox, onBoxSelect, isLoading]);
-
-  const selectedShipment =
-    selectedBox != null
-      ? (shipments.find((s) => s.boxId === selectedBox) ?? null)
-      : null;
 
   if (error) {
     return (
-      <div className="relative w-full h-[400px] rounded-xl border border-border overflow-hidden bg-muted flex items-center justify-center">
-        <div className="text-center p-6">
-          <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-3" />
+      <div className="relative flex h-[400px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-muted">
+        <div className="p-6 text-center">
+          <AlertCircle className="mx-auto mb-3 h-12 w-12 text-destructive" />
           <p className="text-sm text-muted-foreground">{error}</p>
-          <p className="text-xs text-muted-foreground mt-2">Please check browser console for details</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Please check browser console for details
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full h-[400px] rounded-xl border border-border overflow-hidden bg-card">
+    <div className="relative h-[400px] w-full overflow-hidden rounded-xl border border-border bg-card">
       <div
         ref={mapContainer}
-        className="absolute inset-0 w-full h-full"
-        style={{ width: '100%', height: '100%', position: 'absolute' }}
+        className="absolute inset-0 h-full w-full"
+        style={{ width: "100%", height: "100%", position: "absolute" }}
       />
 
-      {selectedShipment && (
-        <div
-          className="absolute left-3 top-3 z-20 w-[min(calc(100%-1.5rem),20rem)] max-h-[min(22rem,calc(100%-5rem))] overflow-y-auto rounded-xl border border-border bg-card/95 shadow-lg backdrop-blur-md"
-          role="dialog"
-          aria-label="Package condition preview">
-          <div
-            className={cn(
-              "h-1 rounded-t-[inherit] bg-gradient-to-r",
-              statusUi[selectedShipment.status].bar,
-            )}
-          />
-          <div className="p-3.5 pt-3">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex min-w-0 items-center gap-2">
-                <span
-                  className={cn(
-                    "h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-background",
-                    statusUi[selectedShipment.status].dot,
-                  )}
-                  aria-hidden
-                />
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-foreground">
-                    {selectedShipment.boxId}
-                  </p>
-                  <span
-                    className={cn(
-                      "mt-0.5 inline-block rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-                      statusUi[selectedShipment.status].badge,
-                    )}>
-                    {statusUi[selectedShipment.status].label}
-                  </span>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => onBoxSelect(null)}
-                className="shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                aria-label="Close preview">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <p className="mt-3 flex items-start gap-1.5 text-xs text-muted-foreground">
-              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-              <span>{selectedShipment.location}</span>
-            </p>
-
-            <div className="mt-3 rounded-lg border border-border/80 bg-secondary/40 p-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Kondisi paket
-              </p>
-              <p className="mt-1.5 text-xs leading-relaxed text-foreground">
-                {selectedShipment.conditionReport}
-              </p>
-            </div>
-
-            <p className="mt-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              Detail telemetri
-            </p>
-            <ul className="mt-2 space-y-2 text-xs">
-              <li className="flex items-center justify-between gap-2">
-                <span className="flex items-center gap-1.5 text-muted-foreground">
-                  <Activity className="h-3.5 w-3.5" />
-                  G-Force puncak
-                </span>
-                <span
-                  className={cn(
-                    "font-semibold tabular-nums",
-                    selectedShipment.gForcePeak > 5
-                      ? "text-destructive"
-                      : "text-foreground",
-                  )}>
-                  {selectedShipment.gForcePeak.toFixed(1)}g
-                </span>
-              </li>
-              <li className="flex items-center justify-between gap-2">
-                <span className="flex items-center gap-1.5 text-muted-foreground">
-                  <Cpu className="h-3.5 w-3.5" />
-                  AI risiko kerusakan
-                </span>
-                <span
-                  className={cn(
-                    "font-semibold tabular-nums",
-                    selectedShipment.aiDamageLikelihood > 50
-                      ? "text-destructive"
-                      : "text-foreground",
-                  )}>
-                  {selectedShipment.aiDamageLikelihood}%
-                </span>
-              </li>
-              <li className="flex items-center justify-between gap-2">
-                <span className="flex items-center gap-1.5 text-muted-foreground">
-                  <Battery className="h-3.5 w-3.5" />
-                  Baterai
-                </span>
-                <span
-                  className={cn(
-                    "font-semibold tabular-nums",
-                    selectedShipment.battery < 50
-                      ? "text-destructive"
-                      : "text-foreground",
-                  )}>
-                  {selectedShipment.battery}%
-                </span>
-              </li>
-              <li className="flex items-center justify-between gap-2">
-                <span className="flex items-center gap-1.5 text-muted-foreground">
-                  <Signal className="h-3.5 w-3.5" />
-                  Sinyal
-                </span>
-                <span
-                  className={cn(
-                    "font-semibold tabular-nums",
-                    selectedShipment.signalStrength < 50
-                      ? "text-destructive"
-                      : "text-foreground",
-                  )}>
-                  {selectedShipment.signalStrength}%
-                </span>
-              </li>
-              <li className="flex items-start justify-between gap-2 border-t border-border/60 pt-2">
-                <span className="flex items-center gap-1.5 text-muted-foreground">
-                  <Clock className="h-3.5 w-3.5 shrink-0" />
-                  Update terakhir
-                </span>
-                <span className="text-right text-[11px] font-medium text-foreground">
-                  {formatTelemetryTime(selectedShipment.timestamp)}
-                </span>
-              </li>
-            </ul>
-
-            <div className="mt-3 rounded-md border border-dashed border-border bg-muted/30 px-2.5 py-2">
-              <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                <Shield className="h-3 w-3" />
-                Integrity hash
-              </p>
-              <p className="mt-1 break-all font-mono text-[10px] leading-snug text-muted-foreground">
-                {shortHash(selectedShipment.storageHash)}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Loading Overlay */}
       {isLoading && (
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-20">
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/80 backdrop-blur-sm">
           <div className="text-center">
-            <Loader2 className="h-8 w-8 text-primary animate-spin mx-auto mb-2" />
+            <Loader2 className="mx-auto mb-2 h-8 w-8 animate-spin text-primary" />
             <p className="text-sm text-muted-foreground">Loading map...</p>
           </div>
         </div>
       )}
 
-      {/* Info Badge */}
-      <div className="absolute bottom-4 left-4 bg-background/80 backdrop-blur border border-border px-3 py-2 rounded-lg flex items-center gap-2 z-10">
+      <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 rounded-lg border border-border bg-background/80 px-3 py-2 backdrop-blur">
         <Package className="h-4 w-4 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground">
-          Live Tracking Map
-        </span>
+        <span className="text-xs text-muted-foreground">Klik titik untuk koordinat</span>
       </div>
     </div>
   );
