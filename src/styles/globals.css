@@ -385,11 +385,21 @@ body {
   border-top-color: #1a1a1a !important;
 }
 
+/* Light chrome: default MapLibre icons stay sharp (no filter: invert blur on hover) */
 .mapboxgl-ctrl-group {
-  background: rgba(0, 0, 0, 0.8) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+}
+
+.mapboxgl-ctrl-group button {
+  background-color: transparent !important;
+}
+
+.mapboxgl-ctrl-group button:hover {
+  background-color: rgba(0, 0, 0, 0.06) !important;
 }
 
 .mapboxgl-ctrl-icon {
-  filter: invert(1);
+  filter: none;
 }

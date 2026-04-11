@@ -1,22 +1,63 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Package, AlertCircle, Loader2 } from "lucide-react";
+import {
+  Package,
+  AlertCircle,
+  Loader2,
+  X,
+  MapPin,
+  Activity,
+  Cpu,
+  Battery,
+  Signal,
+  Clock,
+  Shield,
+} from "lucide-react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import type { ShipmentRecord } from "@/data/mockData";
+import { cn } from "@/lib/utils";
 
-interface ShipmentData {
-  id: string;
-  boxId: string;
-  location: string;
-  status: "healthy" | "warning" | "critical";
-  gForcePeak: number;
-  battery: number;
-  signalStrength: number;
+function formatTelemetryTime(iso: string): string {
+  try {
+    return new Date(iso).toLocaleString(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  } catch {
+    return iso;
+  }
 }
 
+function shortHash(hash: string): string {
+  if (hash.length <= 22) return hash;
+  return `${hash.slice(0, 12)}…${hash.slice(-8)}`;
+}
+
+const statusUi = {
+  healthy: {
+    label: "Healthy",
+    dot: "bg-emerald-500",
+    bar: "from-emerald-500 to-teal-600",
+    badge: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25",
+  },
+  warning: {
+    label: "Warning",
+    dot: "bg-amber-500",
+    bar: "from-amber-500 to-orange-600",
+    badge: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/25",
+  },
+  critical: {
+    label: "Critical",
+    dot: "bg-red-500",
+    bar: "from-red-500 to-rose-700",
+    badge: "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/25",
+  },
+} as const;
+
 interface MapLibreMapProps {
-  shipments: ShipmentData[];
+  shipments: ShipmentRecord[];
   selectedBox: string | null;
   onBoxSelect: (boxId: string | null) => void;
 }
@@ -126,9 +167,24 @@ export function MapLibreMap({ shipments, selectedBox, onBoxSelect }: MapLibreMap
     };
   }, []);
 
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || isLoading || !selectedBox) return;
+    const coords = shipmentCoordinates[selectedBox];
+    if (!coords) return;
+    const z = Math.max(map.getZoom(), 4);
+    map.flyTo({
+      center: coords,
+      zoom: z,
+      duration: 900,
+      essential: true,
+    });
+  }, [selectedBox, isLoading]);
+
   // Update markers when shipments or selection changes
   useEffect(() => {
-    if (!mapRef.current || isLoading) return;
+    const map = mapRef.current;
+    if (!map || isLoading) return;
 
     // Clear existing markers
     markersRef.current.forEach(marker => marker.remove());
@@ -155,119 +211,65 @@ export function MapLibreMap({ shipments, selectedBox, onBoxSelect }: MapLibreMap
         background: ${statusColors[shipment.status]};
         border: 3px solid white;
         border-radius: 50%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.45);
         cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
         display: flex;
         align-items: center;
         justify-content: center;
         z-index: 10;
+        transform: translateZ(0);
+        backface-visibility: hidden;
       `;
 
       if (selectedBox === shipment.boxId) {
-        el.style.transform = 'scale(1.3)';
-        el.style.boxShadow = `0 0 20px ${statusColors[shipment.status]}80, 0 4px 16px rgba(0,0,0,0.6)`;
-        el.style.zIndex = '100';
-        el.style.borderColor = '#fff';
+        el.style.boxShadow = `0 0 0 3px #fff, 0 0 22px ${statusColors[shipment.status]}aa, 0 6px 18px rgba(0,0,0,0.45)`;
+        el.style.zIndex = "100";
+        el.style.borderColor = "#fff";
       }
 
-      // Set icon based on status
       el.innerHTML = getStatusIcon(shipment.status);
+      const svg = el.querySelector("svg");
+      if (svg) {
+        svg.style.display = "block";
+        svg.style.flexShrink = "0";
+      }
 
-      el.addEventListener('mouseenter', () => {
+      el.addEventListener("mouseenter", () => {
         if (selectedBox !== shipment.boxId) {
-          el.style.transform = 'scale(1.15)';
-          el.style.boxShadow = `0 0 15px ${statusColors[shipment.status]}60`;
+          el.style.boxShadow = `0 0 0 2px rgba(255,255,255,0.95), 0 4px 14px ${statusColors[shipment.status]}70, 0 2px 8px rgba(0,0,0,0.4)`;
         }
       });
 
-      el.addEventListener('mouseleave', () => {
+      el.addEventListener("mouseleave", () => {
         if (selectedBox !== shipment.boxId) {
-          el.style.transform = 'scale(1)';
-          el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.5)';
+          el.style.boxShadow = "0 2px 8px rgba(0,0,0,0.45)";
         }
       });
 
-      // Create popup with complete shipment data
-      const popup = new maplibregl.Popup({
-        offset: 25,
-        closeButton: true,
-        closeOnClick: false,
-      }).setHTML(`
-        <div style="
-          font-family: system-ui, -apple-system, sans-serif;
-          padding: 12px 14px;
-          min-width: 200px;
-          background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
-          color: #fff;
-          border-radius: 10px;
-          border: 1px solid rgba(255,255,255,0.1);
-        ">
-          <div style="font-weight: bold; font-size: 15px; margin-bottom: 6px; color: #fff; display: flex; align-items: center; gap: 6px;">
-            <span style="color: ${statusColors[shipment.status]}">●</span>
-            ${shipment.boxId}
-          </div>
-          <div style="font-size: 12px; color: #a0a0a0; margin-bottom: 10px; display: flex; align-items: center; gap: 4px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-            ${shipment.location}
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; font-size: 11px;">
-            <div style="color: #a0a0a0;">G-Force:</div>
-            <div style="font-weight: 600; color: ${shipment.gForcePeak > 5 ? '#ef4444' : '#fff'};">
-              ${shipment.gForcePeak.toFixed(1)}g
-            </div>
-            <div style="color: #a0a0a0;">Battery:</div>
-            <div style="font-weight: 500; color: ${shipment.battery < 50 ? '#ef4444' : '#fff'};">
-              ${shipment.battery}%
-            </div>
-            <div style="color: #a0a0a0;">Signal:</div>
-            <div style="font-weight: 500; color: ${shipment.signalStrength < 50 ? '#ef4444' : '#fff'};">
-              ${shipment.signalStrength}%
-            </div>
-          </div>
-          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-            <span style="
-              display: inline-block;
-              padding: 4px 10px;
-              border-radius: 12px;
-              font-size: 10px;
-              font-weight: 600;
-              text-transform: uppercase;
-              letter-spacing: 0.5px;
-              background: ${statusColors[shipment.status]}20;
-              color: ${statusColors[shipment.status]};
-            ">
-              ${shipment.status}
-            </span>
-          </div>
-        </div>
-      `);
-
-      // Add marker to map
       const marker = new maplibregl.Marker({ element: el })
         .setLngLat(coords)
-        .setPopup(popup)
-        .addTo(mapRef.current);
+        .addTo(map);
 
-      // Handle marker click - show popup and select
-      el.addEventListener('click', (e) => {
+      el.addEventListener("click", (e) => {
         e.stopPropagation();
-        onBoxSelect(selectedBox === shipment.boxId ? null : shipment.boxId);
-        // Toggle popup
-        if (marker.getPopup().isOpen()) {
-          marker.togglePopup();
-        } else {
-          marker.togglePopup();
+        const isSame = selectedBox === shipment.boxId;
+        if (isSame) {
+          onBoxSelect(null);
+          return;
         }
+        onBoxSelect(shipment.boxId);
       });
 
       markersRef.current.push(marker);
     });
 
   }, [shipments, selectedBox, onBoxSelect, isLoading]);
+
+  const selectedShipment =
+    selectedBox != null
+      ? (shipments.find((s) => s.boxId === selectedBox) ?? null)
+      : null;
 
   if (error) {
     return (
@@ -288,6 +290,151 @@ export function MapLibreMap({ shipments, selectedBox, onBoxSelect }: MapLibreMap
         className="absolute inset-0 w-full h-full"
         style={{ width: '100%', height: '100%', position: 'absolute' }}
       />
+
+      {selectedShipment && (
+        <div
+          className="absolute left-3 top-3 z-20 w-[min(calc(100%-1.5rem),20rem)] max-h-[min(22rem,calc(100%-5rem))] overflow-y-auto rounded-xl border border-border bg-card/95 shadow-lg backdrop-blur-md"
+          role="dialog"
+          aria-label="Package condition preview">
+          <div
+            className={cn(
+              "h-1 rounded-t-[inherit] bg-gradient-to-r",
+              statusUi[selectedShipment.status].bar,
+            )}
+          />
+          <div className="p-3.5 pt-3">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex min-w-0 items-center gap-2">
+                <span
+                  className={cn(
+                    "h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-background",
+                    statusUi[selectedShipment.status].dot,
+                  )}
+                  aria-hidden
+                />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-foreground">
+                    {selectedShipment.boxId}
+                  </p>
+                  <span
+                    className={cn(
+                      "mt-0.5 inline-block rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+                      statusUi[selectedShipment.status].badge,
+                    )}>
+                    {statusUi[selectedShipment.status].label}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => onBoxSelect(null)}
+                className="shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                aria-label="Close preview">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <p className="mt-3 flex items-start gap-1.5 text-xs text-muted-foreground">
+              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <span>{selectedShipment.location}</span>
+            </p>
+
+            <div className="mt-3 rounded-lg border border-border/80 bg-secondary/40 p-3">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Kondisi paket
+              </p>
+              <p className="mt-1.5 text-xs leading-relaxed text-foreground">
+                {selectedShipment.conditionReport}
+              </p>
+            </div>
+
+            <p className="mt-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              Detail telemetri
+            </p>
+            <ul className="mt-2 space-y-2 text-xs">
+              <li className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <Activity className="h-3.5 w-3.5" />
+                  G-Force puncak
+                </span>
+                <span
+                  className={cn(
+                    "font-semibold tabular-nums",
+                    selectedShipment.gForcePeak > 5
+                      ? "text-destructive"
+                      : "text-foreground",
+                  )}>
+                  {selectedShipment.gForcePeak.toFixed(1)}g
+                </span>
+              </li>
+              <li className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <Cpu className="h-3.5 w-3.5" />
+                  AI risiko kerusakan
+                </span>
+                <span
+                  className={cn(
+                    "font-semibold tabular-nums",
+                    selectedShipment.aiDamageLikelihood > 50
+                      ? "text-destructive"
+                      : "text-foreground",
+                  )}>
+                  {selectedShipment.aiDamageLikelihood}%
+                </span>
+              </li>
+              <li className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <Battery className="h-3.5 w-3.5" />
+                  Baterai
+                </span>
+                <span
+                  className={cn(
+                    "font-semibold tabular-nums",
+                    selectedShipment.battery < 50
+                      ? "text-destructive"
+                      : "text-foreground",
+                  )}>
+                  {selectedShipment.battery}%
+                </span>
+              </li>
+              <li className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <Signal className="h-3.5 w-3.5" />
+                  Sinyal
+                </span>
+                <span
+                  className={cn(
+                    "font-semibold tabular-nums",
+                    selectedShipment.signalStrength < 50
+                      ? "text-destructive"
+                      : "text-foreground",
+                  )}>
+                  {selectedShipment.signalStrength}%
+                </span>
+              </li>
+              <li className="flex items-start justify-between gap-2 border-t border-border/60 pt-2">
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <Clock className="h-3.5 w-3.5 shrink-0" />
+                  Update terakhir
+                </span>
+                <span className="text-right text-[11px] font-medium text-foreground">
+                  {formatTelemetryTime(selectedShipment.timestamp)}
+                </span>
+              </li>
+            </ul>
+
+            <div className="mt-3 rounded-md border border-dashed border-border bg-muted/30 px-2.5 py-2">
+              <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <Shield className="h-3 w-3" />
+                Integrity hash
+              </p>
+              <p className="mt-1 break-all font-mono text-[10px] leading-snug text-muted-foreground">
+                {shortHash(selectedShipment.storageHash)}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Loading Overlay */}
       {isLoading && (

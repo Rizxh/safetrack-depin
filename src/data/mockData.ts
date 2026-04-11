@@ -9,6 +9,8 @@ export interface ShipmentRecord {
   battery: number;
   signalStrength: number;
   location: string;
+  /** Short narrative for map popup / ops review (mock) */
+  conditionReport: string;
 }
 
 export const shipmentData: ShipmentRecord[] = [
@@ -24,6 +26,8 @@ export const shipmentData: ShipmentRecord[] = [
     battery: 92,
     signalStrength: 87,
     location: "Hamburg, DE",
+    conditionReport:
+      "Telemetry nominal. G-force within spec, battery and LTE strong. No handling incidents in the last 24h.",
   },
   {
     id: "2",
@@ -37,6 +41,8 @@ export const shipmentData: ShipmentRecord[] = [
     battery: 78,
     signalStrength: 65,
     location: "Rotterdam, NL",
+    conditionReport:
+      "Elevated shock detected (handling or rough road). AI damage likelihood moderate—recommend visual inspection at next hub.",
   },
   {
     id: "3",
@@ -50,6 +56,8 @@ export const shipmentData: ShipmentRecord[] = [
     battery: 95,
     signalStrength: 92,
     location: "Antwerp, BE",
+    conditionReport:
+      "Stable route profile. Cold chain sensors in range. Continue monitoring; no action required.",
   },
   {
     id: "4",
@@ -63,6 +71,8 @@ export const shipmentData: ShipmentRecord[] = [
     battery: 45,
     signalStrength: 34,
     location: "Shanghai, CN",
+    conditionReport:
+      "Critical: repeated high G events plus weak signal and low battery. Possible mishandling or device fault—escalate to on-site team immediately.",
   },
   {
     id: "5",
@@ -76,6 +86,8 @@ export const shipmentData: ShipmentRecord[] = [
     battery: 88,
     signalStrength: 76,
     location: "Singapore, SG",
+    conditionReport:
+      "All vitals green. Last ping on schedule; hash chain verified on Depin anchor (mock).",
   },
   {
     id: "6",
@@ -89,6 +101,8 @@ export const shipmentData: ShipmentRecord[] = [
     battery: 62,
     signalStrength: 48,
     location: "Dubai, AE",
+    conditionReport:
+      "Warning: intermittent connectivity in desert corridor. G-force spikes suggest hard braking or transfer shock—verify strap tension.",
   },
   {
     id: "7",
@@ -102,6 +116,8 @@ export const shipmentData: ShipmentRecord[] = [
     battery: 97,
     signalStrength: 95,
     location: "Tokyo, JP",
+    conditionReport:
+      "Excellent link budget and motion profile. Shipment cleared automated QA gate (mock).",
   },
   {
     id: "8",
@@ -115,6 +131,8 @@ export const shipmentData: ShipmentRecord[] = [
     battery: 31,
     signalStrength: 22,
     location: "Lagos, NG",
+    conditionReport:
+      "Critical: severe shock signature and poor RF—may be tamper or drop. Dispatch recovery protocol and request manual scan.",
   },
   {
     id: "9",
@@ -128,6 +146,8 @@ export const shipmentData: ShipmentRecord[] = [
     battery: 85,
     signalStrength: 81,
     location: "New York, US",
+    conditionReport:
+      "Routine urban last-mile. Minor vibration only; cargo integrity estimate high.",
   },
   {
     id: "10",
@@ -141,6 +161,8 @@ export const shipmentData: ShipmentRecord[] = [
     battery: 71,
     signalStrength: 59,
     location: "São Paulo, BR",
+    conditionReport:
+      "Borderline metrics: moderate AI risk score. Schedule hub photo check; battery OK for estimated ETA.",
   },
 ];
 
