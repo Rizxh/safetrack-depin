@@ -1,16 +1,27 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { Poppins } from "next/font/google";
+import { Syne, JetBrains_Mono } from "next/font/google";
+import { Web3Provider } from "@/providers/WagmiProvider";
 
-const poppins = Poppins({
+const syne = Syne({
+  weight: ["400", "700", "800"],
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <div className={poppins.className}>
-      <Component {...pageProps} />
-    </div>
+    <Web3Provider>
+      <div className={`${syne.variable} ${jetbrainsMono.variable} font-mono`}>
+        <Component {...pageProps} />
+      </div>
+    </Web3Provider>
   );
 }
