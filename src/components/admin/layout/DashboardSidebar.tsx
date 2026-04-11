@@ -12,6 +12,7 @@ import {
   RefreshCcw,
   type LucideIcon,
 } from "lucide-react";
+import Image from "next/image";
 
 interface NavItem {
   id: string;
@@ -55,7 +56,12 @@ export function DashboardSidebar({
       {/* Logo */}
       <div className="flex items-center gap-2 px-5 py-6 border-b border-border">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/15">
-          <Shield className="h-4 w-4 text-green-400" />
+          <Image
+            src="/icon.png"
+            alt="SafeTrack"
+            width={32}
+            height={32}
+          />
         </div>
         <div>
           <h1 className="text-sm font-semibold text-white-500">SafeTrack</h1>
