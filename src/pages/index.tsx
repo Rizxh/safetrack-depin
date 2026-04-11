@@ -17,17 +17,29 @@ const ThreeScene = dynamic(() => import("@/components/three/ThreeScene"), {
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black">
-      <Navbar />
-      <HeroSection ThreeScene={ThreeScene} />
-      <LiveSensorCard />
-      <HowItWorks />
-      <Features />
-      <ProjectFlowSection />
-      <FaqSection />
-      <ContactSection />
-      <DocsSection />
-      <Footer />
+    <main className="landing-root relative min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-[var(--accent-soft)]">
+      <div
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{ background: "var(--gradient-hero)" }}
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none fixed inset-x-0 top-0 z-60 h-px bg-linear-to-r from-transparent via-[var(--accent)] to-transparent opacity-40"
+        aria-hidden
+      />
+
+      <div className="relative z-10">
+        <Navbar />
+        <HeroSection ThreeScene={ThreeScene} />
+        <LiveSensorCard />
+        <HowItWorks />
+        <Features />
+        <ProjectFlowSection />
+        <FaqSection />
+        <ContactSection />
+        <DocsSection />
+        <Footer />
+      </div>
     </main>
   );
 }

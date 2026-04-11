@@ -6,18 +6,18 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ ThreeScene }: HeroSectionProps) {
-  const badgeRef = useRef<HTMLDivElement>(null);
   const h1Ref = useRef<HTMLHeadingElement>(null);
   const subRef = useRef<HTMLParagraphElement>(null);
-  const btnRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const badgeRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        [badgeRef.current, h1Ref.current, subRef.current, btnRef.current],
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.15, duration: 0.7, ease: "power2.out", delay: 0.2 }
+        [badgeRef.current, h1Ref.current, subRef.current, ctaRef.current],
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, ease: "power2.out", delay: 0.05 }
       );
     }, sectionRef);
 
@@ -30,40 +30,64 @@ export default function HeroSection({ ThreeScene }: HeroSectionProps) {
     <section
       id="home"
       ref={sectionRef}
-      className="relative overflow-hidden"
+      className="relative flex min-h-screen flex-col justify-center overflow-hidden px-4 pb-16 pt-28 text-center lg:pt-24"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_25%,rgba(29,158,117,0.24),transparent_40%),radial-gradient(circle_at_85%_15%,rgba(59,130,246,0.26),transparent_38%),linear-gradient(120deg,#030712_15%,#041c30_55%,#05251e_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(3,7,18,0.2),rgba(3,7,18,0.75))]" />
-      <div className="relative mx-auto grid max-w-6xl gap-8 px-4 sm:px-6 lg:min-h-screen lg:grid-cols-2">
-      <div className="flex flex-col justify-center pb-16 pt-32 lg:pt-28">
-        <div
-          ref={badgeRef}
-          className="inline-flex w-fit items-center gap-2 rounded-full border border-teal-200/70 bg-white/15 px-3 py-1 text-xs text-teal-100 backdrop-blur-md"
-        >
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-teal-400" />
-          Powered by 0G Network &amp; AI
+      {/* Ambient blobs */}
+      <div
+        className="pointer-events-none absolute left-1/4 top-1/4 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--accent)] opacity-10 blur-[120px]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute bottom-1/4 right-1/4 h-64 w-64 translate-x-1/2 translate-y-1/2 rounded-full bg-purple-600 opacity-[0.08] blur-[100px]"
+        aria-hidden
+      />
+
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16 lg:text-left">
+        <div className="flex flex-col items-center lg:items-start">
+          <div
+            ref={badgeRef}
+            className="glass noise-overlay relative mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-[var(--text-secondary)]"
+          >
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+            DePIN · 0G · On-device AI
+          </div>
+
+          <h1
+            ref={h1Ref}
+            className="text-5xl font-bold leading-[1.1] tracking-tight text-[var(--text-primary)] md:text-6xl lg:text-7xl"
+          >
+            Shipment clarity, without the noise.
+          </h1>
+
+          <p
+            ref={subRef}
+            className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--text-secondary)] lg:mx-0"
+          >
+            Sensors, risk scores, and proofs in one calm view—built for teams who care about what happens in
+            transit.
+          </p>
+
+          <div ref={ctaRef} className="mt-10 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+            <button
+              type="button"
+              className="rounded-xl bg-[var(--accent)] px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
+            >
+              Start tracking
+            </button>
+            <button
+              type="button"
+              className="glass rounded-xl px-6 py-3 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
+            >
+              Live demo →
+            </button>
+          </div>
         </div>
-        <h1 ref={h1Ref} className="mt-6 text-4xl font-medium leading-tight text-white sm:text-5xl lg:text-6xl">
-          Know if your package arrived <span className="text-teal-300">safe.</span>
-        </h1>
-        <p ref={subRef} className="mt-5 max-w-md text-base leading-relaxed text-slate-200">
-          Smart IoT sensor + AI prediction that monitors every bump, temperature spike, and shock - in real-time,
-          on-chain.
-        </p>
-        <div ref={btnRef} className="mt-8 flex flex-wrap gap-3">
-          <button className="rounded-xl bg-linear-to-r from-teal-400 to-blue-500 px-6 py-3 text-sm font-medium text-white shadow-lg transition-transform hover:scale-[1.02]">
-            Start tracking
-          </button>
-          <button className="rounded-xl border border-white/30 bg-white/10 px-6 py-3 text-sm text-slate-100 transition-colors hover:border-teal-300">
-            See live demo
-          </button>
+
+        {/* GLASS SURFACE — 3D preview */}
+        <div className="noise-overlay glass-strong relative mx-auto h-[min(420px,50vh)] w-full max-w-lg overflow-hidden rounded-2xl p-3 glow-accent lg:mx-0 lg:h-[min(520px,65vh)] lg:max-w-none">
+          <ThreeScene className="h-full w-full opacity-95" />
         </div>
       </div>
-      <div className="h-[340px] sm:h-[420px] md:h-[480px] lg:h-auto">
-        <ThreeScene className="h-full w-full drop-shadow-[0_30px_80px_rgba(16,185,129,0.22)]" />
-      </div>
-      </div>
-      {/* <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-white to-transparent" /> */}
     </section>
   );
 }

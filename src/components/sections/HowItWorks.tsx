@@ -8,17 +8,15 @@ const steps = [
   {
     title: "Attach the device",
     description:
-      "Clip our ESP32 sensor inside the package. It reads shock, temperature, and humidity every second.",
+      "ESP32 inside the box—shock, temperature, humidity on a steady cadence.",
   },
   {
-    title: "AI monitors in real-time",
-    description:
-      "Our ML model predicts safety score continuously. Alerts fire the moment anomalies are detected.",
+    title: "AI in real time",
+    description: "Risk score updates continuously; anomalies surface immediately.",
   },
   {
     title: "Claim with proof",
-    description:
-      "Every event is stored on 0G Network - immutable, verifiable. File claims backed by tamper-proof data.",
+    description: "Events on 0G—immutable records when you need to settle a dispute.",
   },
 ];
 
@@ -30,14 +28,14 @@ export default function HowItWorks() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         cardsRef.current,
-        { y: 30, opacity: 0 },
+        { y: 20, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.15,
-          duration: 0.7,
+          stagger: 0.1,
+          duration: 0.55,
           ease: "power2.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
+          scrollTrigger: { trigger: sectionRef.current, start: "top 82%", once: true },
         }
       );
     }, sectionRef);
@@ -51,28 +49,31 @@ export default function HowItWorks() {
     <section
       id="how-it-works"
       ref={sectionRef}
-      className="relative overflow-hidden bg-black px-4 py-20 text-white sm:px-6"
+      className="scroll-mt-28 border-t border-[var(--glass-border)]/40 py-24 md:py-32"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(59,130,246,0.12),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(16,185,129,0.12),transparent_38%)]" />
-      <div className="relative mx-auto max-w-6xl">
-        <p className="text-xs font-medium uppercase tracking-widest text-teal-300">HOW IT WORKS</p>
-        <h2 className="mt-3 text-3xl font-medium text-white">Three steps to full shipment confidence</h2>
-        <p className="mt-2 text-sm text-zinc-400">From hardware to dashboard in minutes.</p>
+      <div className="mx-auto max-w-6xl px-5 sm:px-6">
+        <div className="max-w-2xl">
+          <p className="text-xs font-medium uppercase tracking-widest text-[var(--text-muted)]">How it works</p>
+          <h2 className="mt-5 text-3xl font-semibold leading-[1.2] tracking-tight text-[var(--text-primary)] md:text-4xl">
+            Three steps. No playbook required.
+          </h2>
+          <p className="mt-6 text-lg leading-relaxed text-[var(--text-secondary)] md:text-xl">
+            From hardware to dashboard in minutes.
+          </p>
+        </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="mt-14 grid gap-6 sm:mt-16 md:grid-cols-3 md:gap-8">
           {steps.map((step, idx) => (
             <div
               key={step.title}
               ref={(el) => {
                 cardsRef.current[idx] = el;
               }}
-              className="group rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-transparent hover:bg-[linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0)),linear-gradient(90deg,#22c55e,#06b6d4)] hover:[background-clip:padding-box,border-box] hover:shadow-[0_12px_30px_rgba(6,182,212,0.2)]"
+              className="glass flex min-h-[200px] flex-col rounded-2xl p-8 md:min-h-[220px] md:p-9"
             >
-              <div className="mb-4 flex h-8 w-8 items-center justify-center rounded-full border border-teal-400 text-sm font-medium text-teal-300 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-zinc-900">
-                {idx + 1}
-              </div>
-              <h3 className="text-base font-medium text-white">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-400">{step.description}</p>
+              <span className="font-mono text-sm tabular-nums text-[var(--accent)]">0{idx + 1}</span>
+              <h3 className="mt-6 text-xl font-semibold leading-snug text-[var(--text-primary)]">{step.title}</h3>
+              <p className="mt-4 flex-1 text-base leading-[1.7] text-[var(--text-secondary)]">{step.description}</p>
             </div>
           ))}
         </div>

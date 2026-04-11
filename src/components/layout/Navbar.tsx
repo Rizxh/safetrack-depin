@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { Bell, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const links = [
-  { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
+  { label: "Steps", href: "#how-it-works" },
   { label: "Features", href: "#features" },
-  { label: "FAQs", href: "#faqs" },
-  { label: "Contact us", href: "#contact-us" },
+  { label: "Flow", href: "#flow" },
+  { label: "FAQ", href: "#faqs" },
+  { label: "Contact", href: "#contact-us" },
   { label: "Docs", href: "#docs" },
 ];
 
+const scrollOffset = 96;
+
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("#home");
   const [showNav, setShowNav] = useState(true);
@@ -31,7 +33,6 @@ export default function Navbar() {
     const onScroll = () => {
       const currentY = window.scrollY;
       const lastY = lastScrollYRef.current;
-      setScrolled(currentY > 80);
 
       if (currentY <= 24) {
         setShowNav(true);
@@ -42,12 +43,17 @@ export default function Navbar() {
         setShowNav(true);
       }
 
-      const currentSection = [...sectionElsRef.current]
-        .reverse()
-        .find((section) => currentY + 120 >= section.offsetTop);
-      if (currentSection) {
-        const id = `#${currentSection.id}`;
-        if (id !== activeRef.current) setActive(id);
+      const homeEl = document.querySelector("#home");
+      if (homeEl && currentY + 120 < (homeEl as HTMLElement).offsetHeight) {
+        if (activeRef.current !== "#home") setActive("#home");
+      } else {
+        const currentSection = [...sectionElsRef.current]
+          .reverse()
+          .find((section) => currentY + scrollOffset + 40 >= section.offsetTop);
+        if (currentSection) {
+          const id = `#${currentSection.id}`;
+          if (id !== activeRef.current) setActive(id);
+        }
       }
 
       lastScrollYRef.current = currentY;
@@ -61,98 +67,100 @@ export default function Navbar() {
   const scrollToSection = (href: string) => {
     const el = document.querySelector(href);
     if (el) {
-      const y = (el as HTMLElement).offsetTop - 88;
+      const y = (el as HTMLElement).offsetTop - scrollOffset;
       window.scrollTo({ top: y, behavior: "smooth" });
       setActive(href);
       setOpen(false);
     }
   };
 
+  const scrollHome = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setActive("#home");
+    setOpen(false);
+  };
+
   return (
-    <header
-      className={`fixed top-0 z-50 w-screen transition-all duration-300 ${
-        showNav ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
-      } ${scrolled ? "backdrop-blur-xl" : "bg-transparent"
-      }`}
-    >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        <div className="hidden w-full items-center md:flex">
-          <div className="mx-auto flex w-full max-w-6xl items-center rounded-full border border-white/35 bg-[#0B1F31]/80 px-3 py-2 shadow-[0_14px_40px_rgba(4,17,31,0.45)] backdrop-blur-2xl">
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="mr-4 flex shrink-0 items-center gap-2 rounded-full px-2 py-1"
-              aria-label="Safetrack home"
-            >
-              <span className="text-2xl font-bold uppercase tracking-tight text-white">ST</span>
-            </button>
+    <header className="fixed left-1/2 top-4 z-50 w-[90%] max-w-5xl -translate-x-1/2 md:top-5">
+      {/* GLASS SURFACE — floating nav — vertical hide preserves horizontal center */}
+      <nav
+        className={`glass-strong relative rounded-2xl px-4 py-2.5 shadow-lg shadow-black/20 transition-all duration-300 sm:px-6 sm:py-3 ${
+          showNav ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"
+        }`}
+      >
+        <div className="flex items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={scrollHome}
+            className="font-mono text-sm font-semibold tracking-tight text-[var(--text-primary)]"
+            aria-label="Safetrack home"
+          >
+            Safetrack
+          </button>
 
-            <nav className="flex flex-1 items-center justify-center gap-1">
-              {links.map((link) => (
-                <button
-                  key={link.label}
-                  className={`rounded-full px-3 py-1.5 text-sm transition-all ${
-                    active === link.href
-                      ? "bg-white text-[#0B1F31] shadow-sm"
-                      : "text-slate-100 hover:bg-white/15 hover:text-white"
-                  }`}
-                  onClick={() => scrollToSection(link.href)}
-                >
-                  {link.label}
-                </button>
-              ))}
-            </nav>
-
-            <button
-              className="ml-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/35 bg-white/10 text-white transition-colors hover:bg-white/20"
-              aria-label="Notifications"
-            >
-              <Bell className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-
-        <div className="w-full md:hidden">
-          <div className="mx-auto flex max-w-xs items-center justify-between rounded-full border border-white/35 bg-[#0B1F31]/85 px-4 py-2 shadow-[0_14px_40px_rgba(4,17,31,0.45)] backdrop-blur-2xl">
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="text-2xl font-bold uppercase tracking-tight text-white"
-              aria-label="Safetrack home"
-            >
-              ST
-            </button>
-            <button onClick={() => setOpen((v) => !v)} aria-label="Toggle menu">
-              {open ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5 text-white" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {open && (
-        <div className="px-4 pt-2 md:hidden">
-          <div className="mx-auto max-w-xs rounded-2xl border border-white/35 bg-[#0B1F31]/95 px-4 py-3 backdrop-blur-xl">
-            <div className="flex flex-col gap-2">
-            <div className="mb-1 flex items-center gap-2 px-1">
-              <span className="text-2xl font-bold uppercase tracking-tight text-white">ST</span>
-            </div>
+          <div className="hidden flex-1 items-center justify-center gap-1 lg:flex">
             {links.map((link) => (
               <button
-                key={link.label}
-                className={`rounded-md px-3 py-2 text-left text-sm transition-colors ${
-                  active === link.href ? "bg-white text-[#0B1F31]" : "text-slate-100 hover:bg-white/15"
+                key={link.href}
+                type="button"
+                className={`rounded-lg px-2.5 py-1.5 text-sm transition-colors ${
+                  active === link.href
+                    ? "text-[var(--text-primary)]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
                 onClick={() => scrollToSection(link.href)}
               >
                 {link.label}
               </button>
             ))}
-            <button className="mt-2 flex w-fit items-center gap-2 rounded-full border border-white/35 bg-white/10 px-4 py-2 text-sm text-white">
-              <Bell className="h-4 w-4" />
-              Notifications
+          </div>
+
+          <div className="hidden items-center gap-3 lg:flex">
+            <button
+              type="button"
+              onClick={() => scrollToSection("#contact-us")}
+              className="glass rounded-xl px-4 py-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
+            >
+              Get started
             </button>
+          </div>
+
+          <button
+            type="button"
+            className="rounded-lg p-2 text-[var(--text-secondary)] lg:hidden"
+            aria-label="Toggle menu"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+
+        {open && (
+          <div className="mt-3 border-t border-[var(--glass-border)] pt-3 lg:hidden">
+            <div className="flex max-h-[min(60vh,420px)] flex-col gap-1 overflow-y-auto">
+              {links.map((link) => (
+                <button
+                  key={link.href}
+                  type="button"
+                  className={`rounded-lg py-2.5 text-left text-sm ${
+                    active === link.href ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"
+                  }`}
+                  onClick={() => scrollToSection(link.href)}
+                >
+                  {link.label}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="glass mt-2 rounded-xl px-4 py-2.5 text-left text-sm text-[var(--text-secondary)]"
+                onClick={() => scrollToSection("#contact-us")}
+              >
+                Get started
+              </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </nav>
     </header>
   );
 }

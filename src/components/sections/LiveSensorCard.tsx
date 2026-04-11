@@ -1,102 +1,86 @@
-import { Activity, Box, ShieldCheck, Thermometer } from "lucide-react";
+import { Activity, Box, ShieldCheck } from "lucide-react";
 
 const cards = [
   {
-    title: "Live Package Health",
+    title: "Package health",
     subtitle: "SHIP-2024-091",
-    value: "SAFE 94%",
+    value: "94% safe",
     icon: ShieldCheck,
-    points: ["Temp: 28.4 C", "Humidity: 61%", "Shock freq: 0.32 Hz"],
+    points: ["28.4°C · 61% RH", "Shock stable"],
   },
   {
-    title: "Courier Route + Events",
-    subtitle: "Jakarta -> Surabaya",
-    value: "12 checkpoints",
+    title: "Route",
+    subtitle: "Jakarta → Surabaya",
+    value: "12 stops",
     icon: Activity,
-    points: ["2 anomaly alerts", "ETA drift: +11 min", "Signal stable: 99.2%"],
+    points: ["2 alerts", "ETA +11 min"],
   },
   {
-    title: "Escrow Claim Status",
+    title: "Escrow",
     subtitle: "Contract #0G-4A9",
-    value: "No active claim",
+    value: "Clear",
     icon: Box,
-    points: ["Deposit: 1.20 USDT", "CID proofs: 18", "Last scan: 2m ago"],
+    points: ["1.20 USDT", "18 CIDs"],
   },
 ];
 
 export default function LiveSensorCard() {
   return (
-    <section id="about" className="relative overflow-hidden bg-black px-4 pb-20 pt-20 text-white sm:px-6">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.16),transparent_35%)]" />
-      <div className="relative mx-auto max-w-6xl">
-        <p className="text-xs font-medium uppercase tracking-widest text-teal-300">About Safetrack</p>
-        <h2 className="mt-3 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl">
-          First-class smart tracking experience for logistics and customers.
+    <section id="about" className="scroll-mt-28 py-24 md:py-32">
+      <div className="mx-auto max-w-6xl px-5 sm:px-6">
+        <p className="text-xs font-medium uppercase tracking-widest text-[var(--text-muted)]">About</p>
+        <h2 className="mt-5 max-w-3xl text-3xl font-semibold leading-[1.2] tracking-tight text-[var(--text-primary)] md:text-4xl lg:text-[2.5rem] lg:leading-tight">
+          Logistics intelligence, stripped to what operators actually need.
         </h2>
-        <p className="mt-4 max-w-3xl text-base leading-relaxed text-zinc-300">
-          We build a modern shipping intelligence platform powered by ESP32 sensors, ONNX inference, and 0G
-          decentralized storage. Every shipment event is scored, verified, and ready for claim automation.
+        <p className="mt-8 max-w-2xl text-lg leading-[1.75] text-[var(--text-secondary)] md:text-xl md:leading-relaxed">
+          ESP32 telemetry, ONNX scoring, and 0G-backed evidence—so every event is explainable when it matters.
         </p>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <div className="rounded-3xl border border-white/10 bg-white/3 p-4 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl">
-            <div className="rounded-2xl border border-white/10 bg-black/60 p-4">
-              <div className="mb-3 flex items-center justify-between text-sm text-zinc-300">
-                <span>Safetrack Dashboard</span>
-                <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-xs text-emerald-300">
-                  Live
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl border border-white/10 bg-white/3 p-3">
-                  <p className="text-xs text-zinc-400">Risk Score</p>
-                  <p className="mt-1 text-2xl font-semibold text-emerald-300">94%</p>
+        {/* BENTO — hanya di About: preview lebar + kolom kartu */}
+        <div className="mt-16 grid gap-6 md:mt-20 lg:grid-cols-12 lg:gap-8">
+          <div className="noise-overlay glass relative overflow-hidden rounded-2xl p-8 md:p-10 lg:col-span-7">
+            <div
+              className="pointer-events-none absolute inset-0 rounded-2xl opacity-90"
+              style={{ background: "var(--gradient-card)" }}
+              aria-hidden
+            />
+            <div className="relative z-10">
+              <p className="text-xs font-medium uppercase tracking-widest text-[var(--text-muted)]">Preview</p>
+              <p className="mt-3 text-sm text-[var(--text-secondary)]">Dashboard</p>
+              <div className="mt-12 grid grid-cols-2 gap-x-10 gap-y-8 sm:max-w-md">
+                <div>
+                  <p className="text-xs text-[var(--text-muted)]">Risk</p>
+                  <p className="mt-2 text-3xl font-normal tabular-nums text-[var(--text-primary)]">94%</p>
                 </div>
-                <div className="rounded-xl border border-white/10 bg-white/3 p-3">
-                  <p className="text-xs text-zinc-400">Inference</p>
-                  <p className="mt-1 text-2xl font-semibold text-sky-300">0.9ms</p>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-white/3 p-3">
-                  <p className="text-xs text-zinc-400">CID Proofs</p>
-                  <p className="mt-1 text-xl font-semibold">18</p>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-white/3 p-3">
-                  <p className="text-xs text-zinc-400">Alerts</p>
-                  <p className="mt-1 text-xl font-semibold text-amber-300">2 warning</p>
+                <div>
+                  <p className="text-xs text-[var(--text-muted)]">Inference</p>
+                  <p className="mt-2 text-3xl font-normal tabular-nums text-[var(--text-primary)]">0.9ms</p>
                 </div>
               </div>
-              <div className="mt-4 rounded-xl border border-white/10 bg-white/3 p-3">
-                <div className="mb-2 flex items-center gap-2 text-sm">
-                  <Thermometer className="h-4 w-4 text-sky-300" />
-                  <span className="text-zinc-300">Realtime telemetry stream</span>
-                </div>
-                <div className="space-y-1 text-xs text-zinc-400">
-                  <p>[08:26:01] TEMP=28.4C HUM=61% G=1.02 SCORE=94</p>
-                  <p>[08:26:02] TEMP=28.4C HUM=62% G=1.01 SCORE=94</p>
-                  <p>[08:26:03] TEMP=28.5C HUM=62% G=1.05 SCORE=92</p>
-                </div>
-              </div>
+              <p className="mt-12 text-sm leading-relaxed text-[var(--text-muted)]">
+                Last sync 2m ago · 18 proofs anchored
+              </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
+          <div className="flex flex-col gap-5 lg:col-span-5">
             {cards.map((card) => {
               const Icon = card.icon;
               return (
-                <div key={card.title} className="rounded-2xl border border-white/10 bg-white/3 p-5">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm text-zinc-400">{card.subtitle}</p>
-                      <h3 className="mt-1 text-xl font-semibold">{card.title}</h3>
+                <div key={card.title} className="glass rounded-2xl p-6 md:p-7">
+                  <div className="flex gap-5">
+                    <Icon className="mt-0.5 h-5 w-5 shrink-0 text-[var(--text-muted)]" strokeWidth={1.25} />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs text-[var(--text-muted)]">{card.subtitle}</p>
+                      <h3 className="mt-2 text-lg font-medium text-[var(--text-primary)]">{card.title}</h3>
+                      <p className="mt-2 text-sm font-medium text-[var(--accent)]">{card.value}</p>
+                      <ul className="mt-4 space-y-2 text-sm leading-relaxed text-[var(--text-secondary)]">
+                        {card.points.map((point) => (
+                          <li key={point}>{point}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <Icon className="h-5 w-5 text-emerald-300" />
                   </div>
-                  <p className="mt-2 text-sm text-emerald-300">{card.value}</p>
-                  <ul className="mt-3 space-y-1 text-sm text-zinc-300">
-                    {card.points.map((point) => (
-                      <li key={point}>- {point}</li>
-                    ))}
-                  </ul>
                 </div>
               );
             })}
