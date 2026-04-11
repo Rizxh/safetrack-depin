@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { DashboardSidebar } from "./layout/DashboardSidebar";
 import { OverviewSection } from "./views/OverviewSection";
@@ -10,7 +12,8 @@ import { PredictionsSection } from "./views/PredictionsSection";
 import { SettingsSection } from "./views/SettingsSection";
 import { ClaimsSection } from "./views/ClaimSection";
 import { LifecycleSection } from "./views/LifecycleSection";
-import { Menu, Wallet } from "lucide-react";
+import { Menu } from "lucide-react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
@@ -92,6 +95,9 @@ export default function Dashboard() {
             </h2>
           </div>
 
+          <div className="shrink-0 scale-90 sm:scale-100 [&_button]:max-h-9">
+            <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
+          </div>
         </header>
 
         {/* Konten Utama */}

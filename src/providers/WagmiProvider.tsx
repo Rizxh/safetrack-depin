@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 import { WagmiProvider as WagmiCoreProvider } from 'wagmi';
-import { wagmiConfig, zeroGTestnet } from '@/config/wagmi';
+import { wagmiConfig } from '@/config/wagmi';
 import '@rainbow-me/rainbowkit/styles.css';
 
 const queryClient = new QueryClient();

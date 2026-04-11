@@ -1,5 +1,9 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useRouter } from "next/router";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const links = [
   { label: "About", href: "#about" },
@@ -9,6 +13,104 @@ const links = [
 ];
 
 const scrollOffset = 96;
+
+function WalletNavActions({
+  className,
+  onNavigate,
+  stackVertical,
+}: {
+  className?: string;
+  onNavigate?: () => void;
+  /** Menu mobile: tombol Dashboard + akun full width, vertikal */
+  stackVertical?: boolean;
+}) {
+  const router = useRouter();
+
+  return (
+    <ConnectButton.Custom>
+      {({
+        account,
+        chain,
+        openAccountModal,
+        openChainModal,
+        openConnectModal,
+        authenticationStatus,
+        mounted,
+      }) => {
+        const ready = mounted && authenticationStatus !== "loading";
+        const connected =
+          ready &&
+          account &&
+          chain &&
+          (!authenticationStatus || authenticationStatus === "authenticated");
+
+        return (
+          <div
+            className={className}
+            {...(!ready && {
+              "aria-hidden": true,
+              style: {
+                opacity: 0,
+                pointerEvents: "none" as const,
+                userSelect: "none" as const,
+              },
+            })}
+          >
+            {(() => {
+              const btnBlock = stackVertical ? "w-full justify-center py-2.5" : "";
+
+              if (!connected) {
+                return (
+                  <button
+                    type="button"
+                    onClick={openConnectModal}
+                    className={`rounded-xl bg-[var(--accent)] px-4 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90 ${btnBlock}`}
+                  >
+                    Connect Wallet
+                  </button>
+                );
+              }
+
+              if (chain.unsupported) {
+                return (
+                  <button
+                    type="button"
+                    onClick={openChainModal}
+                    className={`rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-1.5 text-sm font-medium text-amber-200 ${btnBlock}`}
+                  >
+                    Wrong network
+                  </button>
+                );
+              }
+
+              return (
+                <div className={stackVertical ? "flex w-full flex-col gap-2" : "flex items-center gap-2"}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void router.push("/admin");
+                      onNavigate?.();
+                    }}
+                    className={`rounded-xl bg-[var(--accent)] px-4 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90 ${btnBlock}`}
+                  >
+                    Go to dashboard
+                  </button>
+                  <button
+                    type="button"
+                    onClick={openAccountModal}
+                    className={`glass truncate rounded-xl px-3 py-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] ${stackVertical ? "w-full max-w-none py-2.5" : "max-w-[140px]"}`}
+                  >
+                    {account.displayName}
+                  </button>
+                </div>
+              );
+            })()}
+          </div>
+        );
+      }}
+    </ConnectButton.Custom>
+  );
+}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -79,17 +181,16 @@ export default function Navbar() {
 
   return (
     <header className="fixed left-1/2 top-4 z-50 w-[90%] max-w-5xl -translate-x-1/2 md:top-5">
-      {/* GLASS SURFACE — floating nav — vertical hide preserves horizontal center */}
       <nav
         className={`glass-strong relative rounded-2xl px-4 py-2.5 shadow-lg shadow-black/20 transition-all duration-300 sm:px-6 sm:py-3 ${
           showNav ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"
         }`}
       >
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={scrollHome}
-            className="font-mono text-sm font-semibold tracking-tight text-[var(--text-primary)]"
+            className="shrink-0 font-mono text-sm font-semibold tracking-tight text-[var(--text-primary)]"
             aria-label="Safetrack home"
           >
             Safetrack
@@ -112,14 +213,8 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="hidden items-center gap-3 lg:flex">
-            <button
-              type="button"
-              onClick={() => scrollToSection("#contact-us")}
-              className="glass rounded-xl px-4 py-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
-            >
-              Get started
-            </button>
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
+            <WalletNavActions />
           </div>
 
           <button
@@ -147,13 +242,9 @@ export default function Navbar() {
                   {link.label}
                 </button>
               ))}
-              <button
-                type="button"
-                className="glass mt-2 rounded-xl px-4 py-2.5 text-left text-sm text-[var(--text-secondary)]"
-                onClick={() => scrollToSection("#contact-us")}
-              >
-                Get started
-              </button>
+              <div className="mt-3 border-t border-[var(--glass-border)] pt-3">
+                <WalletNavActions stackVertical onNavigate={() => setOpen(false)} />
+              </div>
             </div>
           </div>
         )}
