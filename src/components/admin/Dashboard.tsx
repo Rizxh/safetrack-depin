@@ -12,7 +12,8 @@ import { PredictionsSection } from "./views/PredictionsSection";
 import { SettingsSection } from "./views/SettingsSection";
 import { ClaimsSection } from "./views/ClaimSection";
 import { LifecycleSection } from "./views/LifecycleSection";
-import { Menu } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, Menu } from "lucide-react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Button } from "@/components/ui/button";
 
@@ -81,16 +82,24 @@ export default function Dashboard() {
 
       <div className="flex-1 flex flex-col lg:pl-64">
         {/* Header Dashboard */}
-        <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-20 px-4 lg:px-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-20 px-4 lg:px-6 flex items-center justify-between gap-3">
+          <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
             <Button
               variant="ghost"
               size="icon"
               className="lg:hidden shrink-0"
-              onClick={() => setMobileMenuOpen(true)}>
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
+            >
               <Menu className="h-5 w-5" />
             </Button>
-            <h2 className="text-sm font-semibold tracking-tight truncate">
+            <Button variant="ghost" size="sm" className="shrink-0 gap-1.5 px-2 text-muted-foreground hover:text-foreground" asChild>
+              <Link href="/" aria-label="Kembali ke beranda">
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden sm:inline">Beranda</span>
+              </Link>
+            </Button>
+            <h2 className="min-w-0 text-sm font-semibold tracking-tight truncate">
               {getSectionTitle()}
             </h2>
           </div>

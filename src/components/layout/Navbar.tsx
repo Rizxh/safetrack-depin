@@ -180,11 +180,13 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed left-1/2 top-4 z-50 w-[90%] max-w-5xl -translate-x-1/2 md:top-5">
+    <header className="fixed left-1/2 top-4 z-50 w-[min(92%,calc(100%-1.5rem))] max-w-7xl -translate-x-1/2 md:top-5">
       <nav
-        className={`glass-strong relative rounded-2xl px-4 py-2.5 shadow-lg shadow-black/20 transition-all duration-300 sm:px-6 sm:py-3 ${
-          showNav ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"
-        }`}
+        className={`relative rounded-2xl px-4 py-2.5 shadow-lg transition-all duration-300 sm:px-6 sm:py-3 ${
+          open
+            ? "border border-[var(--glass-border)] bg-[var(--bg-elevated)] shadow-black/35 backdrop-blur-sm"
+            : "glass-strong shadow-black/20"
+        } ${showNav ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"}`}
       >
         <div className="flex items-center justify-between gap-3">
           <button
@@ -228,8 +230,8 @@ export default function Navbar() {
         </div>
 
         {open && (
-          <div className="mt-3 border-t border-[var(--glass-border)] pt-3 lg:hidden">
-            <div className="flex max-h-[min(60vh,420px)] flex-col gap-1 overflow-y-auto">
+          <div className="mt-3 rounded-xl border border-[var(--glass-border)]/80 bg-[var(--bg-base)]/95 pt-3 lg:hidden">
+            <div className="flex max-h-[min(60vh,420px)] flex-col gap-1 overflow-y-auto px-1 pb-1">
               {links.map((link) => (
                 <button
                   key={link.href}

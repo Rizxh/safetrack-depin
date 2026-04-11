@@ -18,7 +18,7 @@ export function Web3Provider({ children }: Web3ProviderProps) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
           theme={darkTheme({
-            accentColor: '#14b8a6', // Teal-400 to match SafeTrack theme
+            accentColor: '#14b8a6',
             accentColorForeground: 'white',
             borderRadius: 'medium',
             fontStack: 'system',

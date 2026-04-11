@@ -1,30 +1,32 @@
+import { LandingSectionHeader } from "@/components/layout/LandingSectionHeader";
+
 export default function ContactSection() {
   return (
-    <section id="contact-us" className="scroll-mt-28 border-t border-[var(--glass-border)]/40 py-24 md:py-32">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
-          <div className="max-w-md">
-            <p className="text-xs font-medium uppercase tracking-widest text-[var(--text-muted)]">Contact</p>
-            <h2 className="mt-5 text-3xl font-semibold leading-[1.2] tracking-tight text-[var(--text-primary)] md:text-4xl">
-              Talk to us
-            </h2>
-            <p className="mt-6 text-lg leading-relaxed text-[var(--text-secondary)]">
-              Pilots, custom dashboards, or enterprise rollout—we keep the thread short.
-            </p>
-          </div>
-          <form className="flex flex-col gap-5">
+    <section
+      id="contact-us"
+      className="landing-section-x scroll-mt-28 border-t border-[var(--glass-border)]/40 py-24 md:py-28"
+    >
+      <div className="landing-content">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-20 xl:gap-24">
+          <LandingSectionHeader
+            className="max-w-md"
+            label="Contact"
+            title="Talk to us"
+            description="Pilots, custom dashboards, or enterprise rollout—we keep the thread short."
+          />
+          <form className="glass noise-overlay flex flex-col gap-5 rounded-2xl p-6 sm:p-8 md:p-9">
             <input
               type="text"
-              className="glass rounded-xl border-0 px-4 py-3.5 text-sm text-[var(--text-primary)] outline-none transition-shadow placeholder:text-[var(--text-muted)] focus:ring-2 focus:ring-[var(--accent)]/30"
+              className="rounded-xl border border-[var(--glass-border)]/70 bg-[var(--bg-base)]/40 px-4 py-3.5 text-sm text-[var(--text-primary)] outline-none transition-shadow placeholder:text-[var(--text-muted)] focus:border-[var(--accent)]/35 focus:ring-2 focus:ring-[var(--accent)]/20"
               placeholder="Name"
             />
             <input
               type="email"
-              className="glass rounded-xl border-0 px-4 py-3.5 text-sm text-[var(--text-primary)] outline-none transition-shadow placeholder:text-[var(--text-muted)] focus:ring-2 focus:ring-[var(--accent)]/30"
+              className="rounded-xl border border-[var(--glass-border)]/70 bg-[var(--bg-base)]/40 px-4 py-3.5 text-sm text-[var(--text-primary)] outline-none transition-shadow placeholder:text-[var(--text-muted)] focus:border-[var(--accent)]/35 focus:ring-2 focus:ring-[var(--accent)]/20"
               placeholder="Email"
             />
             <textarea
-              className="glass min-h-32 rounded-xl border-0 px-4 py-3.5 text-sm text-[var(--text-primary)] outline-none transition-shadow placeholder:text-[var(--text-muted)] focus:ring-2 focus:ring-[var(--accent)]/30"
+              className="min-h-32 rounded-xl border border-[var(--glass-border)]/70 bg-[var(--bg-base)]/40 px-4 py-3.5 text-sm text-[var(--text-primary)] outline-none transition-shadow placeholder:text-[var(--text-muted)] focus:border-[var(--accent)]/35 focus:ring-2 focus:ring-[var(--accent)]/20"
               placeholder="What are you shipping?"
             />
             <button

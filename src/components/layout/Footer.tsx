@@ -29,8 +29,8 @@ function scrollToHash(e: MouseEvent<HTMLAnchorElement>, href: string) {
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[var(--glass-border)]/80 bg-[var(--bg-base)]/80 px-4 pb-10 pt-16 sm:px-6">
-      <div className="mx-auto max-w-6xl">
+    <footer className="landing-section-x border-t border-[var(--glass-border)]/80 bg-[var(--bg-base)]/80 pb-10 pt-16">
+      <div className="landing-content">
         <div className="grid gap-12 border-b border-[var(--glass-border)]/60 pb-14 md:grid-cols-2 lg:grid-cols-12 lg:gap-10">
           {/* Brand */}
           <div className="lg:col-span-4">

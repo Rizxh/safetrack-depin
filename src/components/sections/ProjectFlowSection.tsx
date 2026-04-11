@@ -1,106 +1,81 @@
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  BarChart3,
+  Box,
+  Brain,
+  Cpu,
+  Database,
+  GitBranch,
+  Lock,
+  Router,
+  type LucideIcon,
+  Users,
+} from "lucide-react";
+import { LandingSectionHeader } from "@/components/layout/LandingSectionHeader";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const flowSteps = [
-  { title: "ESP32 + sensors", note: "Shock, frequency, acceleration." },
-  { title: "Gateway", note: "MQTT / HTTPS batches outbound." },
-  { title: "API route", note: "Validate, forward to inference." },
-  { title: "ONNX", note: "Score, label, model hash." },
-  { title: "0G storage", note: "CID-backed evidence." },
-  { title: "Escrow", note: "Threshold-driven settlement." },
-  { title: "Dashboard", note: "Timeline and proofs." },
-  { title: "Users", note: "Scan, claim, confirm." },
+const flowSteps: { title: string; note: string; icon: LucideIcon; span: string }[] = [
+  { title: "ESP32 + sensors", note: "Shock, frequency, acceleration.", icon: Cpu, span: "lg:col-span-5" },
+  { title: "Gateway", note: "MQTT / HTTPS batches outbound.", icon: Router, span: "lg:col-span-7" },
+  { title: "API route", note: "Validate, forward to inference.", icon: GitBranch, span: "lg:col-span-4" },
+  { title: "ONNX", note: "Score, label, model hash.", icon: Brain, span: "lg:col-span-4" },
+  { title: "0G storage", note: "CID-backed evidence.", icon: Database, span: "lg:col-span-4" },
+  { title: "Escrow", note: "Threshold-driven settlement.", icon: Lock, span: "lg:col-span-6" },
+  { title: "Dashboard", note: "Timeline and proofs.", icon: BarChart3, span: "lg:col-span-6" },
+  { title: "Users", note: "Scan, claim, confirm.", icon: Users, span: "lg:col-span-12" },
 ];
 
 export default function ProjectFlowSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
-  const railRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        progressRef.current,
-        { scaleY: 0, transformOrigin: "top center" },
-        {
-          scaleY: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: railRef.current,
-            start: "top 30%",
-            end: "bottom 75%",
-            scrub: true,
-          },
-        }
-      );
-
-      itemRefs.current.forEach((el, idx) => {
-        if (!el) return;
-        gsap.fromTo(
-          el,
-          { opacity: 0.25, y: 12 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.45,
-            delay: idx * 0.04,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 88%",
-              once: true,
-            },
-          }
-        );
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
       id="flow"
-      ref={sectionRef}
-      className="scroll-mt-28 border-t border-[var(--glass-border)]/40 py-24 md:py-32"
+      className="landing-section-x scroll-mt-28 border-t border-[var(--glass-border)]/40 py-24 md:py-28"
     >
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <p className="text-xs font-medium uppercase tracking-widest text-[var(--text-muted)]">System flow</p>
-        <h2 className="mt-5 text-3xl font-semibold leading-[1.2] tracking-tight text-[var(--text-primary)] md:text-4xl">
-          From sensor to proof, in order.
-        </h2>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--text-secondary)]">
-          A single pipeline—no extra layers in the story.
-        </p>
+      <div className="landing-content">
+        <LandingSectionHeader
+          label="System flow"
+          title="From sensor to proof, in order."
+          description="A single pipeline—no extra layers in the story."
+        />
 
-        <div ref={railRef} className="relative mt-14 max-w-2xl md:mt-16">
-          <div className="absolute bottom-0 left-6 top-0 hidden w-px bg-[var(--glass-border)] sm:block" />
-          <div
-            ref={progressRef}
-            className="absolute bottom-0 left-6 top-0 hidden w-px origin-top bg-[var(--accent)] opacity-60 sm:block"
-          />
-
-          {flowSteps.map((step, idx) => (
-            <div key={step.title} className="flex gap-6 pb-12 last:pb-0 sm:gap-8">
-              <div className="flex w-12 shrink-0 justify-center pt-2 sm:justify-center">
-                <span className="hidden h-1.5 w-1.5 rounded-full bg-[var(--accent)] ring-4 ring-[var(--bg-base)] sm:block" />
-                <span className="text-xs tabular-nums text-[var(--text-muted)] sm:hidden">0{idx + 1}</span>
-              </div>
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:mt-14 lg:grid-cols-12 lg:gap-4">
+          {flowSteps.map((step, idx) => {
+            const Icon = step.icon;
+            const isWide = step.span.includes("col-span-12");
+            return (
               <div
-                ref={(el) => {
-                  itemRefs.current[idx] = el;
-                }}
-                className="min-w-0 flex-1"
+                key={step.title}
+                className={`glass noise-overlay flex flex-col rounded-2xl p-5 sm:p-6 ${step.span} ${
+                  isWide ? "sm:col-span-2 lg:flex-row lg:items-center lg:gap-10 lg:p-8" : "min-h-[140px] lg:min-h-[160px]"
+                }`}
               >
-                <h3 className="text-lg font-medium text-[var(--text-primary)]">{step.title}</h3>
-                <p className="mt-2 text-base leading-relaxed text-[var(--text-secondary)]">{step.note}</p>
+                <div className="mb-4 flex shrink-0 items-center gap-3 lg:mb-0">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--accent)]/12 text-[var(--accent)]">
+                    <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
+                  </span>
+                  <span className="font-mono text-xs tabular-nums text-[var(--text-muted)] lg:hidden">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="mb-1 hidden items-center gap-3 lg:flex">
+                    <span className="font-mono text-xs tabular-nums text-[var(--text-muted)]">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <span className="h-px flex-1 max-w-[3rem] bg-[var(--glass-border)]" aria-hidden />
+                  </div>
+                  <h3 className="text-lg font-semibold leading-snug text-[var(--text-primary)]">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)] sm:text-base">{step.note}</p>
+                </div>
+                {isWide && (
+                  <div
+                    className="mt-5 flex h-14 w-full shrink-0 items-center justify-center rounded-xl border border-dashed border-[var(--glass-border)] bg-[var(--bg-base)]/30 lg:mt-0 lg:h-24 lg:w-40"
+                    aria-hidden
+                  >
+                    <Box className="h-8 w-8 text-[var(--text-muted)]" strokeWidth={1.25} />
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

@@ -1,4 +1,5 @@
 import { Activity, Box, ShieldCheck } from "lucide-react";
+import { LandingSectionHeader } from "@/components/layout/LandingSectionHeader";
 
 const cards = [
   {
@@ -26,18 +27,19 @@ const cards = [
 
 export default function LiveSensorCard() {
   return (
-    <section id="about" className="scroll-mt-28 py-24 md:py-32">
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <p className="text-xs font-medium uppercase tracking-widest text-[var(--text-muted)]">About</p>
-        <h2 className="mt-5 max-w-3xl text-3xl font-semibold leading-[1.2] tracking-tight text-[var(--text-primary)] md:text-4xl lg:text-[2.5rem] lg:leading-tight">
-          Logistics intelligence, stripped to what operators actually need.
-        </h2>
-        <p className="mt-8 max-w-2xl text-lg leading-[1.75] text-[var(--text-secondary)] md:text-xl md:leading-relaxed">
-          ESP32 telemetry, ONNX scoring, and 0G-backed evidence—so every event is explainable when it matters.
-        </p>
+    <section
+      id="about"
+      className="landing-section-x scroll-mt-28 border-t border-[var(--glass-border)]/40 py-24 md:py-28"
+    >
+      <div className="landing-content flex flex-col lg:block">
+        <LandingSectionHeader
+          className="order-2 mt-10 max-w-none lg:order-1 lg:mt-0 lg:max-w-3xl"
+          label="About"
+          title="Logistics intelligence, stripped to what operators actually need."
+          description="ESP32 telemetry, ONNX scoring, and 0G-backed evidence—so every event is explainable when it matters."
+        />
 
-        {/* BENTO — hanya di About: preview lebar + kolom kartu */}
-        <div className="mt-16 grid gap-6 md:mt-20 lg:grid-cols-12 lg:gap-8">
+        <div className="order-1 mt-0 grid gap-6 lg:order-2 lg:mt-12 lg:grid-cols-12 lg:gap-8 xl:mt-14 xl:gap-10">
           <div className="noise-overlay glass relative overflow-hidden rounded-2xl p-8 md:p-10 lg:col-span-7">
             <div
               className="pointer-events-none absolute inset-0 rounded-2xl opacity-90"
@@ -67,9 +69,11 @@ export default function LiveSensorCard() {
             {cards.map((card) => {
               const Icon = card.icon;
               return (
-                <div key={card.title} className="glass rounded-2xl p-6 md:p-7">
-                  <div className="flex gap-5">
-                    <Icon className="mt-0.5 h-5 w-5 shrink-0 text-[var(--text-muted)]" strokeWidth={1.25} />
+                <div key={card.title} className="glass noise-overlay rounded-2xl p-6 md:p-7">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:gap-5">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--accent)]/10 text-[var(--accent)] sm:h-auto sm:w-auto sm:justify-start sm:rounded-none sm:bg-transparent sm:text-[var(--text-muted)]">
+                      <Icon className="h-5 w-5 sm:mt-0.5" strokeWidth={1.25} />
+                    </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs text-[var(--text-muted)]">{card.subtitle}</p>
                       <h3 className="mt-2 text-lg font-medium text-[var(--text-primary)]">{card.title}</h3>

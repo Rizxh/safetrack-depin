@@ -30,7 +30,7 @@ export default function HeroSection({ ThreeScene }: HeroSectionProps) {
     <section
       id="home"
       ref={sectionRef}
-      className="relative flex min-h-dvh flex-col justify-center overflow-visible scroll-mt-28 px-4 py-20 text-center sm:py-24 lg:py-20"
+      className="landing-section-x relative flex min-h-dvh flex-col justify-center overflow-visible scroll-mt-28 py-24 text-center sm:py-28 lg:py-24 xl:py-28"
     >
       {/* Ambient blobs */}
       <div
@@ -38,12 +38,12 @@ export default function HeroSection({ ThreeScene }: HeroSectionProps) {
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute bottom-1/4 right-1/4 h-64 w-64 translate-x-1/2 translate-y-1/2 rounded-full bg-purple-600 opacity-[0.08] blur-[100px]"
+        className="pointer-events-none absolute bottom-1/4 right-1/4 h-64 w-64 translate-x-1/2 translate-y-1/2 rounded-full bg-[var(--accent-mint)] opacity-[0.1] blur-[100px]"
         aria-hidden
       />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16 lg:items-center lg:text-left">
-        <div className="relative z-10 flex flex-col items-center lg:items-start">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-10 lg:grid-cols-2 lg:items-center lg:gap-20 lg:text-left xl:gap-24">
+        <div className="relative z-10 order-2 flex flex-col items-center lg:order-1 lg:items-start">
           <div
             ref={badgeRef}
             className="glass noise-overlay relative mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-[var(--text-secondary)]"
@@ -54,7 +54,7 @@ export default function HeroSection({ ThreeScene }: HeroSectionProps) {
 
           <h1
             ref={h1Ref}
-            className="text-5xl font-bold leading-[1.1] tracking-tight text-[var(--text-primary)] md:text-6xl lg:text-7xl"
+            className="text-4xl font-bold leading-[1.12] tracking-tight text-[var(--text-primary)] sm:text-5xl md:text-6xl lg:text-[2.75rem] lg:leading-[1.1] xl:text-7xl"
           >
             Shipment clarity, without the noise.
           </h1>
@@ -84,7 +84,7 @@ export default function HeroSection({ ThreeScene }: HeroSectionProps) {
         </div>
 
         {/* 3D — z-20; tinggi sedikit lebih kecil dari versi besar, tetap nyaman (bukan “mini”) */}
-        <div className="relative z-20 mx-auto flex w-full min-w-0 min-h-[min(460px,58vh)] items-center justify-center overflow-visible lg:mx-0 lg:-mr-2 lg:min-h-[min(600px,72vh)] xl:-mr-4">
+        <div className="relative z-20 order-1 mx-auto flex w-full min-w-0 min-h-[min(380px,52vh)] max-w-[min(100%,520px)] items-center justify-center overflow-visible max-lg:pt-2 lg:order-2 lg:mx-0 lg:max-w-none lg:min-h-[min(600px,72vh)] lg:justify-end lg:pr-2 lg:pt-0 xl:pr-0">
           <ThreeScene className="block h-[min(460px,58vh)] w-full min-h-[340px] overflow-visible lg:h-[min(600px,72vh)] lg:min-h-[420px]" />
         </div>
       </div>

@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { ScrollReveal } from "@/components/layout/ScrollReveal";
 import HeroSection from "@/components/sections/HeroSection";
 import LiveSensorCard from "@/components/sections/LiveSensorCard";
 import HowItWorks from "@/components/sections/HowItWorks";
@@ -23,27 +24,46 @@ const ThreeScene = dynamic(() => import("@/components/three/ThreeScene"), {
 export default function Home() {
   return (
     <main className="landing-root relative min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] selection:bg-[var(--accent-soft)]">
+      <div className="landing-hero-base" aria-hidden />
+      <div className="landing-hero-aurora" aria-hidden />
       <div
-        className="pointer-events-none fixed inset-0 z-0"
+        className="pointer-events-none fixed inset-0 z-0 opacity-90"
         style={{ background: "var(--gradient-hero)" }}
         aria-hidden
       />
+      <div className="landing-hero-shimmer" aria-hidden />
       <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-60 h-px bg-linear-to-r from-transparent via-[var(--accent)] to-transparent opacity-40"
+        className="landing-top-glow pointer-events-none fixed inset-x-0 top-0 z-60 h-px bg-linear-to-r from-transparent via-[var(--accent)] to-transparent"
         aria-hidden
       />
 
       <div className="relative z-10">
         <Navbar />
         <HeroSection ThreeScene={ThreeScene} />
-        <LiveSensorCard />
-        <HowItWorks />
-        <Features />
-        <ProjectFlowSection />
-        <FaqSection />
-        <ContactSection />
-        <DocsSection />
-        <Footer />
+        <ScrollReveal>
+          <LiveSensorCard />
+        </ScrollReveal>
+        <ScrollReveal>
+          <HowItWorks />
+        </ScrollReveal>
+        <ScrollReveal>
+          <Features />
+        </ScrollReveal>
+        <ScrollReveal>
+          <ProjectFlowSection />
+        </ScrollReveal>
+        <ScrollReveal>
+          <FaqSection />
+        </ScrollReveal>
+        <ScrollReveal>
+          <ContactSection />
+        </ScrollReveal>
+        <ScrollReveal>
+          <DocsSection />
+        </ScrollReveal>
+        <ScrollReveal>
+          <Footer />
+        </ScrollReveal>
       </div>
     </main>
   );

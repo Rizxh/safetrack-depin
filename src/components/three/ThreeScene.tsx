@@ -312,9 +312,9 @@ function DataLinksToPackage({ basePositions }: { basePositions: THREE.Vector3[] 
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(arr, 3));
     const m = new THREE.LineDashedMaterial({
-      color: "#a8b8c8",
+      color: "#94a3b8",
       transparent: true,
-      opacity: 0.42,
+      opacity: 0.4,
       dashSize: 0.11,
       gapSize: 0.06,
     });
@@ -362,7 +362,7 @@ function SensorFieldRings() {
   const matA = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
-        color: "#7c8c9c",
+        color: "#5eead4",
         transparent: true,
         opacity: 0.14,
       }),
@@ -371,16 +371,16 @@ function SensorFieldRings() {
   const matB = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
-        color: "#8b9cb0",
+        color: "#2dd4bf",
         transparent: true,
-        opacity: 0.1,
+        opacity: 0.11,
       }),
     []
   );
   const matC = useMemo(
     () =>
       new THREE.MeshBasicMaterial({
-        color: "#6b7c8c",
+        color: "#94a3b8",
         transparent: true,
         opacity: 0.09,
       }),
@@ -444,7 +444,7 @@ function SensorMeshNetwork({ basePositions }: { basePositions: THREE.Vector3[] }
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(arr, 3));
     const m = new THREE.LineBasicMaterial({
-      color: "#9aaaba",
+      color: "#94a3b8",
       transparent: true,
       opacity: 0.14,
     });
@@ -504,8 +504,8 @@ function SceneContent({ onPackageHover }: SceneContentProps) {
     <group scale={SCENE_SCALE}>
       <ambientLight intensity={0.45} />
       <directionalLight position={[6, 8, 5]} intensity={1.1} color="#fff5eb" castShadow />
-      <directionalLight position={[-4, 2, -6]} intensity={0.35} color="#b8c5ff" />
-      <pointLight position={[0, 2.2, 2.2]} intensity={0.35} color="#f1f5f9" distance={12} />
+      <directionalLight position={[-4, 2, -6]} intensity={0.35} color="#b8c5d4" />
+      <pointLight position={[0, 2.2, 2.2]} intensity={0.38} color="#5eead4" distance={12} />
       <SensorFieldRings />
       <SensorMeshNetwork basePositions={basePositions} />
       <DataLinksToPackage basePositions={basePositions} />

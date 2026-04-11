@@ -93,23 +93,114 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* ─── Homepage only: premium tokens (indigo accent — scoped) ─── */
+/* ─── Homepage: selaras admin — hitam · putih · teal/hijau ─── */
 .landing-root {
   --bg-base: #080810;
-  --bg-surface: #0f0f1a;
-  --bg-elevated: #13131f;
+  --bg-surface: #0c0c0e;
+  --bg-elevated: #121214;
   --glass-bg: rgba(255, 255, 255, 0.04);
   --glass-bg-hover: rgba(255, 255, 255, 0.07);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-hover: rgba(255, 255, 255, 0.15);
-  --text-primary: #f0f0f5;
-  --text-secondary: #8888a0;
-  --text-muted: #44445a;
-  --accent: #6366f1;
-  --accent-soft: rgba(99, 102, 241, 0.15);
-  --accent-glow: rgba(99, 102, 241, 0.3);
-  --gradient-hero: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
-  --gradient-card: radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(45, 212, 191, 0.28);
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #52525b;
+  --accent: #2dd4bf;
+  --accent-bright: #5eead4;
+  --accent-mint: #2dd4bf;
+  --accent-soft: rgba(45, 212, 191, 0.18);
+  --accent-glow: rgba(45, 212, 191, 0.35);
+  --gradient-hero: radial-gradient(ellipse 85% 65% at 50% -12%, rgba(45, 212, 191, 0.18) 0%, transparent 58%),
+    radial-gradient(ellipse 50% 40% at 100% 25%, rgba(94, 234, 212, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 45% 38% at 0% 80%, rgba(29, 158, 117, 0.1) 0%, transparent 52%);
+  --gradient-card: radial-gradient(ellipse at top left, rgba(45, 212, 191, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+}
+
+@keyframes landing-aurora-drift {
+  0%,
+  100% {
+    transform: scale(1) translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  33% {
+    transform: scale(1.06) translate(2%, -1.5%) rotate(1deg);
+    opacity: 0.92;
+  }
+  66% {
+    transform: scale(0.98) translate(-1.5%, 2%) rotate(-0.5deg);
+    opacity: 0.88;
+  }
+}
+
+@keyframes landing-mesh-shift {
+  0% {
+    background-position: 0% 40%;
+  }
+  50% {
+    background-position: 100% 60%;
+  }
+  100% {
+    background-position: 0% 40%;
+  }
+}
+
+@keyframes landing-shimmer {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Lapisan dasar: mesh gelap + aksen teal halus */
+.landing-hero-base {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    125deg,
+    rgba(8, 8, 16, 0.95) 0%,
+    rgba(12, 18, 20, 0.92) 30%,
+    rgba(8, 8, 16, 0.98) 55%,
+    rgba(6, 45, 42, 0.35) 78%,
+    rgba(8, 8, 16, 0.95) 100%
+  );
+  background-size: 240% 240%;
+  animation: landing-mesh-shift 22s ease-in-out infinite;
+}
+
+/* Aurora radial — putih/teal lembut */
+.landing-hero-aurora {
+  position: fixed;
+  inset: -15%;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 55% 45% at 30% 12%, rgba(94, 234, 212, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 78% 28%, rgba(45, 212, 191, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 45% 38% at 50% 100%, rgba(255, 255, 255, 0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 8% 55%, rgba(29, 158, 117, 0.12) 0%, transparent 48%);
+  animation: landing-aurora-drift 20s ease-in-out infinite;
+}
+
+/* Highlight horizontal — teal tipis */
+.landing-hero-shimmer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(45, 212, 191, 0.05) 45%,
+    rgba(255, 255, 255, 0.03) 55%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: landing-mesh-shift 18s ease-in-out infinite reverse, landing-shimmer 8s ease-in-out infinite;
 }
 
 /* Glass utilities (read vars from .landing-root on homepage) */
@@ -146,7 +237,24 @@
 .glow-accent {
   box-shadow:
     0 0 40px var(--accent-glow),
-    0 0 80px rgba(99, 102, 241, 0.1);
+    0 0 80px rgba(45, 212, 191, 0.12),
+    0 0 100px rgba(255, 255, 255, 0.04);
+}
+
+@keyframes landing-border-glow {
+  0%,
+  100% {
+    opacity: 0.4;
+    filter: drop-shadow(0 0 10px rgba(45, 212, 191, 0.35));
+  }
+  50% {
+    opacity: 0.65;
+    filter: drop-shadow(0 0 18px rgba(94, 234, 212, 0.4));
+  }
+}
+
+.landing-top-glow {
+  animation: landing-border-glow 6s ease-in-out infinite;
 }
 
 .noise-overlay {
@@ -161,6 +269,87 @@
   pointer-events: none;
   border-radius: inherit;
   z-index: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-hero-base,
+  .landing-hero-aurora,
+  .landing-hero-shimmer,
+  .landing-top-glow {
+    animation: none !important;
+  }
+
+  .landing-hero-base {
+    background-position: 50% 50%;
+  }
+}
+
+/* Horizontal inset — mirror Hero Tailwind px-5 sm:px-6 lg:px-8 xl:px-12 */
+.landing-root .landing-section-x {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .landing-root .landing-section-x {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .landing-root .landing-section-x {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .landing-root .landing-section-x {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* Inner width only; side spacing comes from .landing-section-x on section/footer */
+.landing-root .landing-content {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 80rem;
+}
+
+/* Scroll-driven section fade (ScrollReveal.tsx) */
+.scroll-reveal {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.scroll-reveal--out {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+}
+
+.scroll-reveal--in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-reveal.scroll-reveal--armed.scroll-reveal--in,
+  .scroll-reveal.scroll-reveal--armed.scroll-reveal--out {
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal--out,
+  .scroll-reveal--in {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 body {
