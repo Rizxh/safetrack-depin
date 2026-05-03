@@ -10,6 +10,9 @@ import {
   X,
   Scale,
   RefreshCcw,
+  Route,
+  FileBarChart2,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 import Image from "next/image";
@@ -18,20 +21,31 @@ interface NavItem {
   id: string;
   label: string;
   icon: LucideIcon;
+  badge?: string;
+  group?: string;
 }
 
 const navItems: NavItem[] = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "shipments", label: "Active Shipments", icon: Package },
-  { id: "sensors", label: "Sensor Nodes", icon: Radio },
-  { id: "lifecycle", label: "Device Lifecycle", icon: RefreshCcw },
-  { id: "thresholds", label: "G-Force Thresholds", icon: AlertTriangle },
-  { id: "integrity", label: "0G Data Integrity", icon: Shield },
-  { id: "predictions", label: "AI Predictions (Mirofish)", icon: Brain },
-  { id: "incidents", label: "Incident Reports", icon: FileWarning },
-  { id: "claims", label: "Claims & Escrow", icon: Scale },
-  { id: "settings", label: "Settings & API Keys", icon: Settings },
+  { id: "overview", label: "Overview", icon: LayoutDashboard, group: "main" },
+  { id: "shipments", label: "Active Shipments", icon: Package, group: "main" },
+  { id: "route-tracking", label: "Route Tracking AI", icon: Route, badge: "AI", group: "ai" },
+  { id: "monthly-report", label: "Laporan Bulanan AI", icon: FileBarChart2, badge: "AI", group: "ai" },
+  { id: "predictions", label: "AI Predictions", icon: Sparkles, badge: "AI", group: "ai" },
+  { id: "incidents", label: "Incident Reports", icon: FileWarning, group: "ops" },
+  { id: "integrity", label: "0G Data Integrity", icon: Shield, group: "ops" },
+  { id: "claims", label: "Claims & Escrow", icon: Scale, group: "ops" },
+  { id: "sensors", label: "Sensor Nodes", icon: Radio, group: "config" },
+  { id: "lifecycle", label: "Device Lifecycle", icon: RefreshCcw, group: "config" },
+  { id: "thresholds", label: "G-Force Thresholds", icon: AlertTriangle, group: "config" },
+  { id: "settings", label: "Settings & API Keys", icon: Settings, group: "config" },
 ];
+
+const groupLabels: Record<string, string> = {
+  main: "Utama",
+  ai: "Gemini AI",
+  ops: "Operasional",
+  config: "Konfigurasi",
+};
 
 interface DashboardSidebarProps {
   activeSection: string;
@@ -75,23 +89,43 @@ export function DashboardSidebar({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = activeSection === item.id;
+      <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-4">
+        {(["main", "ai", "ops", "config"] as const).map((group) => {
+          const items = navItems.filter((i) => i.group === group);
+          if (!items.length) return null;
           return (
-            <button
-              key={item.id}
-              onClick={() => handleClick(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
-                isActive
-                  ? "bg-secondary text-foreground font-medium"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-              }`}>
-              <item.icon
-                className={`h-4 w-4 shrink-0 transition-colors ${isActive ? "text-green-500" : ""}`}
-              />
-              <span className="truncate">{item.label}</span>
-            </button>
+            <div key={group}>
+              <p className="px-3 mb-1 text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+                {groupLabels[group]}
+              </p>
+              <div className="space-y-0.5">
+                {items.map((item) => {
+                  const isActive = activeSection === item.id;
+                  const isAI = item.badge === "AI";
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => handleClick(item.id)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
+                        isActive
+                          ? "bg-secondary text-foreground font-medium"
+                          : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                      }`}
+                    >
+                      <item.icon
+                        className={`h-4 w-4 shrink-0 transition-colors ${isActive ? "text-green-500" : isAI ? "text-primary/60" : ""}`}
+                      />
+                      <span className="truncate flex-1 text-left">{item.label}</span>
+                      {item.badge && (
+                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${isActive ? "bg-primary/20 text-primary" : "bg-primary/10 text-primary/70"}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           );
         })}
       </nav>

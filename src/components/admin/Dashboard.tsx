@@ -12,6 +12,9 @@ import { PredictionsSection } from "./views/PredictionsSection";
 import { SettingsSection } from "./views/SettingsSection";
 import { ClaimsSection } from "./views/ClaimSection";
 import { LifecycleSection } from "./views/LifecycleSection";
+import { RouteTrackingSection } from "./views/RouteTrackingSection";
+import { MonthlyReportSection } from "./views/MonthlyReportSection";
+import { AIChatbot } from "./AIChatbot";
 import Link from "next/link";
 import { ArrowLeft, Menu } from "lucide-react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -47,9 +50,13 @@ export default function Dashboard() {
       case "predictions":
         return <PredictionsSection />;
       case "claims":
-        return <ClaimsSection />; 
+        return <ClaimsSection />;
       case "settings":
         return <SettingsSection />;
+      case "route-tracking":
+        return <RouteTrackingSection />;
+      case "monthly-report":
+        return <MonthlyReportSection />;
       default:
         return <OverviewSection />;
     }
@@ -60,13 +67,15 @@ export default function Dashboard() {
       overview: "Dashboard Overview",
       shipments: "Active Shipments",
       sensors: "Sensor Nodes",
-      lifecycle: "Device Lifecycle", 
+      lifecycle: "Device Lifecycle",
       thresholds: "G-Force Thresholds",
       integrity: "0G Data Integrity",
       incidents: "Incident Reports",
-      predictions: "AI Predictions (Mirofish)",
+      predictions: "AI Predictions",
       claims: "Claims & Escrow",
       settings: "Settings & Integrations",
+      "route-tracking": "Route Tracking & AI Analysis",
+      "monthly-report": "Laporan Bulanan AI",
     };
     return titles[activeSection] || "Dashboard";
   };
@@ -114,6 +123,8 @@ export default function Dashboard() {
           {renderSection()}
         </main>
       </div>
+
+      <AIChatbot onNavigate={setActiveSection} />
     </div>
   );
 }
