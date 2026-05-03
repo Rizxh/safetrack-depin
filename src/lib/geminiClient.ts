@@ -3,15 +3,17 @@ import { GoogleGenAI } from "@google/genai";
 export const GEMINI_MODEL_PRIMARY = "gemini-2.5-flash";
 export const GEMINI_MODEL_FALLBACK = "gemini-2.5-flash-lite";
 
+export interface GeminiError {
+  status: number;
+  code: "RATE_LIMITED" | "MISSING_KEY" | "INVALID_KEY" | "UNKNOWN";
+  message: string;
+  retryAfterMs?: number;
+}
+
 export interface GeminiCallResult {
   ok: boolean;
   text: string;
-  error?: {
-    status: number;
-    code: "RATE_LIMITED" | "MISSING_KEY" | "INVALID_KEY" | "UNKNOWN";
-    message: string;
-    retryAfterMs?: number;
-  };
+  error?: GeminiError;
 }
 
 interface GeminiApiError {
@@ -26,7 +28,7 @@ function parseRetryDelay(message: string): number | undefined {
   return undefined;
 }
 
-function classifyError(err: unknown): GeminiCallResult["error"] {
+function classifyError(err: unknown): GeminiError {
   const e = err as GeminiApiError;
   const raw = typeof e?.message === "string" ? e.message : JSON.stringify(e);
   const status =
@@ -93,7 +95,7 @@ export async function callGemini(prompt: string): Promise<GeminiCallResult> {
 
   const ai = new GoogleGenAI({ apiKey });
   const models = [GEMINI_MODEL_PRIMARY, GEMINI_MODEL_FALLBACK];
-  let lastError: GeminiCallResult["error"];
+  let lastError: GeminiError | undefined;
 
   for (let i = 0; i < models.length; i++) {
     const model = models[i];
