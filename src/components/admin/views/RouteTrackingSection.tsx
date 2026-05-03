@@ -241,7 +241,9 @@ function PackageCard({
 
       {isError && (
         <div className="rounded-lg p-2 mb-3 bg-red-500/10 border border-red-500/20 text-center">
-          <span className="text-[11px] text-red-400">Gagal menganalisa. Cek API key Gemini.</span>
+          <span className="text-[11px] text-red-400">
+            Gagal menganalisa. Set <code className="px-1 rounded bg-red-500/20">GEMINI_API_KEY</code> di Vercel Environment Variables.
+          </span>
         </div>
       )}
 

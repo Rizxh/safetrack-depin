@@ -147,11 +147,17 @@ Rules for status:
   const err = result.error!;
   console.error(`Gemini analyze-package failed [${err.code}]:`, err.message);
 
-  // For rate limits or unknown errors, return rule-based result so dashboard stays functional.
-  if (err.code === "RATE_LIMITED" || err.code === "UNKNOWN") {
+  // Always return a rule-based analysis so the dashboard stays functional, even when
+  // the API key is missing/invalid (e.g. on Vercel before env vars are configured).
+  // The `fallback: true` flag tells the UI to show a "Rule-based" badge.
+  if (
+    err.code === "RATE_LIMITED" ||
+    err.code === "UNKNOWN" ||
+    err.code === "MISSING_KEY" ||
+    err.code === "INVALID_KEY"
+  ) {
     return res.status(200).json(ruleBasedAnalysis(data));
   }
 
-  // For configuration errors, surface them clearly.
   return res.status(err.status).json({ error: err.message, code: err.code });
 }

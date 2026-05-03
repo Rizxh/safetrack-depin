@@ -136,7 +136,13 @@ Generate a professional monthly report in Indonesian. Respond ONLY with valid JS
   const err = result.error!;
   console.error(`Gemini monthly-report failed [${err.code}]:`, err.message);
 
-  if (err.code === "RATE_LIMITED" || err.code === "UNKNOWN") {
+  // Always return rule-based report so the dashboard stays useful.
+  if (
+    err.code === "RATE_LIMITED" ||
+    err.code === "UNKNOWN" ||
+    err.code === "MISSING_KEY" ||
+    err.code === "INVALID_KEY"
+  ) {
     return res.status(200).json(fallbackReport(stats));
   }
   return res.status(err.status).json({ error: err.message, code: err.code });
